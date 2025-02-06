@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "ostream": "cpp",
+        "compra-venta vehiculos": "cpp",
+        "iostream": "cpp",
+        "iosfwd": "cpp"
+    }
+}
