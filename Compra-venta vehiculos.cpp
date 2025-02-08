@@ -4,6 +4,12 @@
 
 using namespace std;
 
+void registro(); 
+void guardardatos(); 
+void consultar();
+void actualizar(); 
+void eliminar(); 
+
 struct datos{   //Estructura de datos para los vehiculos
     char placa[7];
     char marca[20]; 
@@ -14,6 +20,44 @@ struct datos{   //Estructura de datos para los vehiculos
     int año;
     int precio;
 };
+
+
+int main() 
+{
+    int opc;
+    char rata[7];
+    
+    cout<<"\t Bienvenido a Mcqueen"<<endl;
+    
+do
+{
+    cout<<"\nPor favor selecccione una opción: "<<endl;
+    cout<<"\n1. Registrar vehículo"<<endl;;
+    cout<<"2. Consultar vehículo"<<endl;;
+    cout<<"3. Actualizar informacion"<<endl;;
+    cout<<"4. Eliminar vehículo"<<endl;;
+    cout<<"5. Salir"<<endl<<endl;
+   
+    cout<<"Opcion: "; cin>>opc; 
+    
+    switch(opc){
+      
+      case 1: cout<<endl<<"\t Registrar vehículo"; registro(); break; 
+      
+      case 2: cout<<endl<<"\t Consultar vehículo"; consultar(); break;
+      
+      case 3: cout<<endl<<"\t Actualizar informacion"; actualizar(); break; 
+      
+      case 4: cout<<endl<<"\t Eliminar vehículo"; eliminar(); break; 
+      
+      case 5: cout<<endl<<"Muchas gracias por visitarnos, te esperamos pronto"; break; 
+       
+      default: cout<<endl<<"Opción no valida"<<endl; break;
+      
+    }
+}while(opc!=5);   
+    return 0;
+}
 
 
 void guardardatos(const datos &vehiculo){  //Guarda los datos de los vehiculos en un archivo binario
@@ -141,7 +185,7 @@ void consultar() {
 
     switch(opc){
         case 1: cout<<"Ingrese la marca del vehiculo: "; cin>> marcaB;  
-                cout<<"\n\tDatos del vehiculo consultado"<<endl;
+                cout<<"\n\tVehiculos disponibles"<<endl;
 
             while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) {
                 if (strcmp(vehiculo.marca, marcaB) == 0) {
@@ -164,7 +208,7 @@ void consultar() {
     
         
         case 2: cout<<"Ingrese el modelo del vehiculo: "; cin>> modeloB; 
-                cout<<"\n\tDatos del vehiculo consultado"<<endl;
+                cout<<"\n\tVehiculos disponibles"<<endl;
         
            while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) {
                  if (strcmp(vehiculo.modelo, modeloB) == 0) {
@@ -188,7 +232,7 @@ void consultar() {
 
         case 3: cout<<"Ingrese el precio minimo: ";cin>> precioMIN;
                 cout<<"Ingrese el precio maximo: ";cin>> precioMAX; 
-                cout<<"\n\tDatos del vehiculo consultado"<<endl;
+                cout<<"\n\tVehiculos disponibles"<<endl;
                 
                 while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) {
                     if (vehiculo.precio >= precioMIN && vehiculo.precio <= precioMAX) {
@@ -211,7 +255,7 @@ void consultar() {
 
 
         case 4: cout<<"Ingrese el tipo (P-propio - C-consignado): "; cin>>tipo;
-              cout<<"\n\tDatos del vehiculo consultado"<<endl;
+              cout<<"\n\tVehiculos disponibles"<<endl;
               
       while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) {
           if (strcmp(vehiculo.tipo, tipo) == 0) {
@@ -255,48 +299,3 @@ void registro(){ //registra los datos de los vehiculos
 
     guardardatos(vehiculo);
 }
-
-
-int main() 
-{
-    int opc;
-    char rata[7];
-    
-    cout<<"\t Bienvenido a Mcqueen"<<endl;
-    
-do
-{
-    cout<<"\nPor favor selecccione una opción: "<<endl;
-    cout<<"\n1. Registrar vehículo"<<endl;;
-    cout<<"2. Consultar vehículo"<<endl;;
-    cout<<"3. Actualizar informacion"<<endl;;
-    cout<<"4. Eliminar vehículo"<<endl;;
-    cout<<"5. Salir"<<endl<<endl;
-   
-    cout<<"Opcion: "; cin>>opc; 
-    
-    switch(opc){
-      
-      case 1: cout<<endl<<"\t Registrar vehículo"; registro(); break; 
-      
-      case 2: cout<<endl<<"\t Consultar vehículo"; consultar(); break;
-      
-      case 3: cout<<endl<<"\t Actualizar informacion"; actualizar(); break; 
-      
-      case 4: cout<<endl<<"\t Eliminar vehículo"; eliminar(); break; 
-      
-      case 5: cout<<endl<<"Muchas gracias por visitarnos, te esperamos pronto"; break; 
-       
-      default: cout<<endl<<"Opción no valida"<<endl; break;
-      
-    }
-}while(opc!=5);   
-    return 0;
-}
-
-
-
-
-
-
-
