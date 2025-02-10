@@ -1,10 +1,11 @@
 #include <iostream> 
 #include <fstream>
-#include <cstring>
+#include <cstring> //para usar strcmp
+#include <cctype> //para usar isupper y isdigit
 
-using namespace std;
+using namespace std;  
 
-void registro(); 
+void registro();             //Declaracion de funciones
 void guardardatos(); 
 void consultar();
 void actualizar(); 
@@ -22,7 +23,7 @@ struct datos{   //Estructura de datos para los vehiculos
 };
 
 
-int main() 
+int main()  //Funcion principal
 {
     int opc;
     char rata[7];
@@ -30,8 +31,8 @@ int main()
     cout<<"\t Bienvenido a Mcqueen"<<endl;
     
 do
-{
-    cout<<"\nPor favor selecccione una opción: "<<endl;
+{   //Menu de opciones
+    cout<<"\nPor favor selecccione una opción: "<<endl;  
     cout<<"\n1. Registrar vehículo"<<endl;;
     cout<<"2. Consultar vehículo"<<endl;;
     cout<<"3. Actualizar informacion"<<endl;;
@@ -74,7 +75,17 @@ void guardardatos(const datos &vehiculo){  //Guarda los datos de los vehiculos e
 }
 
 
-void eliminar() {
+bool validarEntrada(const char* entrada) {      //Valida la entrada de datos
+    for (int i = 0; i < strlen(entrada); i++) {      //recorre la cadena de caracteres //strlen = longitud de la cadena 
+        if (!isupper(entrada[i]) && !isdigit(entrada[i])) {   // isupper, verifica si es letra mayuscula //isdigit, verifica si es un digito
+            return false; //si no es una letra mayuscula o un digito retorna falso
+        }
+    }
+    return true;
+}
+
+
+void eliminar() {  //Cambia el estado del vehiculo a eliminado
     fstream archivo("DatosVehiculos.bin", ios::binary | ios::in | ios::out); // abre el archivo para lectura y escritura en modo binario
 
     if (!archivo.is_open()) { // verifica si el archivo se abrió correctamente
@@ -82,8 +93,8 @@ void eliminar() {
         return;
     }
 
-    datos vehiculo;
-    char placaB[7];
+    datos vehiculo; // crea una variable del tipo de la estructura
+    char placaB[7];   
     bool encontrado = false;
 
     cout << "\n\nIngrese la placa del vehiculo a eliminar: ";
@@ -96,8 +107,8 @@ void eliminar() {
             cout << "\nVehiculo eliminado correctamente" << endl;
 
             // Mueve el puntero de archivo hacia atrás para sobrescribir el registro
-            archivo.seekp(-static_cast<int>(sizeof(datos)), ios::cur);
-            archivo.write(reinterpret_cast<const char*>(&vehiculo), sizeof(datos));
+            archivo.seekp(-static_cast<int>(sizeof(datos)), ios::cur); //Mueve el puntero una posicion hacia atras del tamaño de la estructura
+            archivo.write(reinterpret_cast<const char*>(&vehiculo), sizeof(datos));  //sobreescribe el registro
             break;
         }
     }
@@ -110,7 +121,7 @@ void eliminar() {
 }
 
 
-void actualizar() {
+void actualizar() {   //Actualiza los datos de los vehiculos
     fstream archivo("DatosVehiculos.bin", ios::binary | ios::in | ios::out);
 
     if (!archivo.is_open()) {
@@ -118,7 +129,7 @@ void actualizar() {
         return;
     }
 
-    datos vehiculo;
+    datos vehiculo; // crea una variable del tipo de la estructura
     char placaB[7];
     bool encontrado = false;
     int opc2;
@@ -126,7 +137,7 @@ void actualizar() {
     cout << "\n\nIngrese la placa del vehiculo a actualizar: ";
     cin >> placaB;
 
-    while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) {
+    while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) { // lee los datos del archivo
         if (strcmp(vehiculo.placa, placaB) == 0) {
             encontrado = true;
             cout << "\n¿Que datos desea actualizar?" << endl;
@@ -147,8 +158,8 @@ void actualizar() {
             }
 
             // Mueve el puntero de archivo hacia atrás para sobrescribir el registro
-            archivo.seekp(-static_cast<int>(sizeof(datos)), ios::cur);
-            archivo.write(reinterpret_cast<const char*>(&vehiculo), sizeof(datos));
+            archivo.seekp(-static_cast<int>(sizeof(datos)), ios::cur); //Mueve el puntero una posicion hacia atras del tamaño de la estructura
+            archivo.write(reinterpret_cast<const char*>(&vehiculo), sizeof(datos)); //sobreescribe el registro
             cout << "\nDatos actualizados correctamente"<<endl<< endl;
             break;
         }
@@ -162,17 +173,17 @@ void actualizar() {
 }
 
 
-void consultar() {
+void consultar() {    //Consulta los datos de los vehiculos
 
-    datos vehiculo;
-    char marcaB[20];
+    datos vehiculo;    // crea una variable del tipo de la estructura
+    char marcaB[20];   
     char modeloB[15];
-    int precioMIN;
+    int precioMIN;             //variables para la busqueda
     int precioMAX;
     char tipo[2];
     bool encontrado = false;
 
-    ifstream archivo("DatosVehiculos.bin", ios::binary | ios::in);
+    ifstream archivo("DatosVehiculos.bin", ios::binary | ios::in); //abre el archivo en modo lectura
 
    cout<<endl<<"\nElija una opcion de busqueda: "<<endl;
    cout<<"\n1. Marca"<<endl;
@@ -187,22 +198,22 @@ void consultar() {
         case 1: cout<<"Ingrese la marca del vehiculo: "; cin>> marcaB;  
                 cout<<"\n\tVehiculos disponibles"<<endl;
 
-            while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) {
-                if (strcmp(vehiculo.marca, marcaB) == 0) {
-                    encontrado = true;
-                    cout << "\nPlaca: " << vehiculo.placa << endl;
+            while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) { //lee los datos del archivo
+                if (strcmp(vehiculo.marca, marcaB) == 0) {            //compara la marca ingresada con la marca del vehiculo
+                    encontrado = true;          //si se encuentra un vehiculo 
+                    cout << "\nPlaca: " << vehiculo.placa << endl; 
                     cout << "Marca: " << vehiculo.marca << endl;
                     cout << "Modelo: " << vehiculo.modelo << endl;
-                    cout << "Año: " << vehiculo.año << endl;
+                    cout << "Año: " << vehiculo.año << endl;                //muestra los datos del vehiculo
                     cout << "Color: " << vehiculo.color << endl;
                     cout << "Valor: " << vehiculo.precio << endl;
                     cout << "Tipo: " << vehiculo.tipo << endl;
                     cout << "Estado: " << vehiculo.estado << endl;
                 }
             }
-            archivo.close();
+            archivo.close(); //cierra el archivo
     
-            if (!encontrado) {
+            if (!encontrado) {       //si no se encontraron vehiculos con la marca ingresada
                 cout <<"\nNo hay vehiculos marca "<<marcaB<<" disponibles en este momento" << endl;
             } break;
     
@@ -210,20 +221,20 @@ void consultar() {
         case 2: cout<<"Ingrese el modelo del vehiculo: "; cin>> modeloB; 
                 cout<<"\n\tVehiculos disponibles"<<endl;
         
-           while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) {
-                 if (strcmp(vehiculo.modelo, modeloB) == 0) {
+           while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) {//lee los datos del archivo
+                 if (strcmp(vehiculo.modelo, modeloB) == 0) { //compara el modelo ingresado con el modelo del vehiculo
                   encontrado = true;
                   cout << "\nPlaca: " << vehiculo.placa << endl;
                   cout << "Marca: " << vehiculo.marca << endl;
                   cout << "Modelo: " << vehiculo.modelo << endl;
-                  cout << "Año: " << vehiculo.año << endl;
+                  cout << "Año: " << vehiculo.año << endl;                //muestra los datos del vehiculo
                   cout << "Color: " << vehiculo.color << endl;
                   cout << "Valor: " << vehiculo.precio << endl;
                   cout << "Tipo: " << vehiculo.tipo << endl;
                   cout << "Estado: " << vehiculo.estado << endl;
             }
         }
-        archivo.close();
+        archivo.close(); //cierra el archivo
 
             if (!encontrado) {
              cout <<"\nNo hay vehiculos modelo "<<modeloB<<" disponibles en este momento" << endl;
@@ -235,12 +246,12 @@ void consultar() {
                 cout<<"\n\tVehiculos disponibles"<<endl;
                 
                 while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) {
-                    if (vehiculo.precio >= precioMIN && vehiculo.precio <= precioMAX) {
+                    if (vehiculo.precio >= precioMIN && vehiculo.precio <= precioMAX) { //compara el rango de precio ingresado con el precio del vehiculo
                      encontrado = true;
                      cout << "\nPlaca: " << vehiculo.placa << endl;
                      cout << "Marca: " << vehiculo.marca << endl;
                      cout << "Modelo: " << vehiculo.modelo << endl;
-                     cout << "Año: " << vehiculo.año << endl;
+                     cout << "Año: " << vehiculo.año << endl;             //muestra los datos del vehiculo
                      cout << "Color: " << vehiculo.color << endl;
                      cout << "Valor: " << vehiculo.precio << endl;
                      cout << "Tipo: " << vehiculo.tipo << endl;
@@ -257,14 +268,14 @@ void consultar() {
         case 4: cout<<"Ingrese el tipo (P-propio - C-consignado): "; cin>>tipo;
               cout<<"\n\tVehiculos disponibles"<<endl;
               
-      while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) {
-          if (strcmp(vehiculo.tipo, tipo) == 0) {
+      while (archivo.read(reinterpret_cast<char*>(&vehiculo), sizeof(datos))) {  //lee los datos del archivo
+          if (strcmp(vehiculo.tipo, tipo) == 0) { //compara el tipo ingresado con el tipo del vehiculo
            encontrado = true;
            cout << "\nPlaca: " << vehiculo.placa << endl;
            cout << "Marca: " << vehiculo.marca << endl;
-           cout << "Modelo: " << vehiculo.modelo << endl;
-           cout << "Año: " << vehiculo.año << endl;
-           cout << "Color: " << vehiculo.color << endl;
+           cout << "Modelo: " << vehiculo.modelo << endl; 
+           cout << "Año: " << vehiculo.año << endl;                //muestra los datos del vehiculo
+           cout << "Color: " << vehiculo.color << endl; 
            cout << "Valor: " << vehiculo.precio << endl;
            cout << "Tipo: " << vehiculo.tipo << endl;
            cout << "Estado: " << vehiculo.estado << endl;
@@ -272,12 +283,12 @@ void consultar() {
       
   }
  
-  archivo.close();
-     if (!encontrado) { 
+  archivo.close(); //cierra el archivo
+     if (!encontrado) {       
       cout << "\nNo hay vehiculos de tipo " << tipo << " disponibles en este momento" << endl;
       }
       break;
-      default:
+      default:    //si la opcion ingresada no es valida
             cout << "\nOpción no válida" << endl;
             break;
     }
@@ -286,16 +297,48 @@ void consultar() {
 
 void registro(){ //registra los datos de los vehiculos
     
-    datos vehiculo;
+    datos vehiculo; //crea una variable del tipo de la estructura
     cout<<endl<<"\nIngrese los siguientes datos "<<endl; 
+    
     cout<<endl<<"Placa: "; cin>>vehiculo.placa;
+    if (!validarEntrada(vehiculo.placa)) {  //valida la entrada 
+        cout << "Entrada inválida. Solo se permiten letras mayúsculas y dígitos." << endl;
+        return; //si la entrada no es valida sale de la funcion
+    }
+
     cout<<"Marca: "; cin>>vehiculo.marca;
+    if (!validarEntrada(vehiculo.marca)) {
+        cout << "Entrada inválida. Solo se permiten letras mayúsculas y dígitos." << endl;
+        return;
+    }
+
     cout<<"Modelo: "; cin>>vehiculo.modelo;
+    if(!validarEntrada(vehiculo.modelo)){
+        cout<<"Entrada inválida. Solo se permiten letras mayúsculas y dígitos."<<endl;
+        return;
+    }
+
     cout<<"Año: "; cin>>vehiculo.año;
-    cout<<"Color: "; cin>>vehiculo.color;                                                                                                                                                                                                                                      
+
+    cout<<"Color: "; cin>>vehiculo.color;   
+    if (!validarEntrada(vehiculo.color)) {
+        cout << "Entrada inválida. Solo se permiten letras mayúsculas y dígitos." << endl;
+        return;
+    }                
+
     cout<<"Valor: "; cin>>vehiculo.precio;
+    
     cout<<"Tipo: "; cin>>vehiculo.tipo; 
+    if (!validarEntrada(vehiculo.tipo)) {
+        cout << "Entrada inválida. Solo se permiten letras mayúsculas y dígitos." << endl;
+        return;
+    }
+
     cout<<"Estado: "; cin>>vehiculo.estado; 
+    if (!validarEntrada(vehiculo.estado)) {
+        cout << "Entrada inválida. Solo se permiten letras mayúsculas y dígitos." << endl;
+        return;
+    }
 
     guardardatos(vehiculo);
 }
