@@ -26,7 +26,6 @@ struct datos{   //Estructura de datos para los vehiculos
 int main()  //Funcion principal
 {
     int opc;
-    char rata[7];
     
     cout<<"\t Bienvenido a Mcqueen"<<endl;
     
@@ -342,3 +341,5 @@ void registro(){ //registra los datos de los vehiculos
 
     guardardatos(vehiculo);
 }
+
+
