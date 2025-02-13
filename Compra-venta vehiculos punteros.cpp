@@ -136,7 +136,7 @@ void consultar(){
     int precioMIN, precioMAX;                         //variables para la busqueda
     bool encontrado = false;
 
-    datos **ptrB = pvehiculo;   //Puntero a un puntero que apunta al array de punteros
+    datos **ptrB = pvehiculo;   //Puntero que apunta al array de punteros
                                 //puntero que apunta a un puntero (**)
 
    cout<<endl<<"\nElija una opcion de busqueda: "<<endl;
@@ -241,20 +241,53 @@ void consultar(){
 }
 
 
-void actualizar(){}
+void actualizar(){
+    
+    char placaB[7];
+    int opc;
+    datos **ptr = pvehiculo; //el puntero
+    bool encontrado = false;
+    
+    cout<<"\n\nIngrese la placa del vehiculo a actualizar: "; cin>>placaB;
+
+    while(ptr < pvehiculo + countV){
+        if(strcmp((*ptr)->placa, placaB) == 0){
+            encontrado = true;
+            cout<<"\n¿Que datos desea actualizar?"<<endl;
+            cout<<"\n1. Precio";
+            cout<<"\n2. Tipo";
+            cout<<"\n3. Estado"<<endl;
+            cout<<"\nElija una opcion: "; cin>>opc;
+
+            if(opc == 1){
+             cout<<"Ingrese el nuevo precio: "; cin>>(*ptr)->precio;
+            }else if (opc == 2){
+             cout<<"Ingrese el nuevo tipo (P-propio C-consigado): "; cin>>(*ptr)->tipo;
+            }else if (opc == 3) {
+             cout<<"Ingrese el nuevo estado (A-activo E-eliminado): "; cin>>(*ptr)->estado;
+            }else{
+                cout<<"Opcion invalida";
+            }
+            return;
+        }
+    }
+       if(!encontrado){
+       cout<<"Vehiculo con placa "<<placaB<<" no encontrado";
+        }
+}
 
 
 void eliminar(){
-    char placaB[7];
+    char placaB[7];  
     bool encontrado = false;
-    datos **ptrB = pvehiculo;
+    datos **ptrB = pvehiculo; //puntero que apunta al array de punteros
 
     cout<<"\n\nIngrese la placa del vehiculo que desea eliminar: "; cin>>placaB;
 
     while(ptrB < pvehiculo + countV){
-        if(strcmp((*ptrB)->placa, placaB) == 0){
+        if(strcmp((*ptrB)->placa, placaB) == 0){  //*ptrB accede a la estructura a la que apunta el puntero pvehiculo
             encontrado = true;
-            (*ptrB)->estado[0] = 'E';
+            (*ptrB)->estado[0] = 'E'; 
             cout<<"\nVehiculo eliminado exitosamente"<<endl;
             break;
         }
@@ -264,6 +297,6 @@ void eliminar(){
     }
 }
 
+void mostrar(){
 
-
-
+}
