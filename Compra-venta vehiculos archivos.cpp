@@ -18,8 +18,8 @@ struct datos{   //Estructura de datos para los vehiculos
     char color[10]; 
     char tipo[2]; 
     char estado[2];
-    int año;
-    int precio;
+    char año[11];
+    char precio[11];
 };
 
 
@@ -177,8 +177,8 @@ void consultar() {    //Consulta los datos de los vehiculos
     datos vehiculo;    // crea una variable del tipo de la estructura
     char marcaB[20];   
     char modeloB[15];
-    int precioMIN;             //variables para la busqueda
-    int precioMAX;
+    char precioMIN[11];             //variables para la busqueda
+    char precioMAX[11];
     char tipo[2];
     bool encontrado = false;
 
@@ -318,6 +318,11 @@ void registro(){ //registra los datos de los vehiculos
     }
 
     cout<<"Año: "; cin>>vehiculo.año;
+    if(!isdigit(vehiculo.año[0])){
+        cout<<"Entrada inválida. Solo se permiten dígitos."<<endl;
+        return;
+    }
+
 
     cout<<"Color: "; cin>>vehiculo.color;   
     if (!validarEntrada(vehiculo.color)) {
@@ -326,6 +331,10 @@ void registro(){ //registra los datos de los vehiculos
     }                
 
     cout<<"Valor: "; cin>>vehiculo.precio;
+    if(!isdigit(vehiculo.precio[0])){
+        cout<<"Entrada inválida. Solo se permiten dígitos."<<endl;
+        return;
+    }
     
     cout<<"Tipo: "; cin>>vehiculo.tipo; 
     if (!validarEntrada(vehiculo.tipo)) {
