@@ -47,6 +47,7 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp",
-        "compra-venta vehiculos punteros": "cpp"
+        "compra-venta vehiculos punteros": "cpp",
+        "listas simples": "cpp"
     }
 }
