@@ -2,12 +2,15 @@
 
 using namespace std;
  
+
+void opcinsert(struct nodo *&primero, int &count);
 void agregarnodofinal(struct nodo *&primero);   //*&  trabaja con el puntero original
-void opcinsert(struct nodo *&primero, int count);
+void agregarnodoposc(struct nodo *&primero, int &count);
+void agregarnodoid(struct nodo *&primero);
+void opceliminar(struct nodo *&primero, int &count);
+void eliminarnodoposc(struct nodo *&primero, int &count);
+void eliminarnodoid(struct nodo *primero, int &count);
 void muestracontenido(struct nodo *primero, int count);    //*   trabaja con una copia del puntero
-void agregarnodoposc(struct nodo *&primero, int count);
-void opceliminar(struct nodo *&primero, int count);
-void eliminarnodoposc(struct nodo *&primero, int count);
 
 struct nodo{                 
    int id;
@@ -20,7 +23,7 @@ int main(){
 
     struct nodo *primero = NULL;  //este puntero lo utilizo para apuntar al primer nodo de la lista
 
-    int opc;
+    char opc;
     int count;
 
     do{
@@ -31,6 +34,7 @@ int main(){
     cout<<"4. Salir"<<endl;
     cout<<"\nOpcion: "; cin>>opc;
 
+    
 
     switch(opc){
 
@@ -46,12 +50,12 @@ int main(){
 
     }
 
-    }while(opc!=4);
+    }while(opc!=4); 
 
     return 0;
 }
 
-void opcinsert(struct nodo *&primero, int count){
+void opcinsert(struct nodo *&primero, int &count){
 
     int opc;
 
@@ -68,11 +72,11 @@ void opcinsert(struct nodo *&primero, int count){
 
         case 2: cout<<"\n\tInsertar nodo despues de una posicion"<<endl; agregarnodoposc(primero, count); return; break;
 
-        case 3: cout<<"\n\tInsertar nodo despues de una persona"<<endl;
+        case 3: cout<<"\n\tInsertar nodo despues de una persona"<<endl; agregarnodoid(primero); return; break;
 
-        case 4: cout<<"\n¡Vuelve pronto!"<<endl;
+        case 4: cout<<"\n¡Vuelve pronto!"<<endl; return; break;
 
-        default: cout<<"\nOpción no valida"<<endl; break;
+        default: cout<<"\nOpción no valida"<<endl; return; break;
 
     }
 
@@ -101,11 +105,11 @@ void agregarnodofinal(struct nodo *&primero){
     }
 }
 
-void agregarnodoposc(struct nodo *&primero, int count){
+void agregarnodoposc(struct nodo *&primero, int &count){
 
     int posc;
     int count2 = 1;
-    cout<<"\nCantidad de nodos registrados: "<<count;
+    cout<<"\nCantidad de nodos registrados: "<<endl<<count;
     cout<<"\nIndique la posicion donde desea agregar el nodo: "; cin>>posc;
 
     if(posc <= count){
@@ -129,7 +133,31 @@ void agregarnodoposc(struct nodo *&primero, int count){
     }
 }
 
-void opceliminar(struct nodo *&primero, int count){
+void agregarnodoid(struct nodo *&primero){
+
+    int id;
+
+    cout<<"\nIndique el id de la persona despues de la cual desea agregar el nodo: "; cin>>id;
+
+    
+        struct nodo *nuevo;
+        nuevo = new(struct nodo);
+
+        cout<<"\nIngrese su id: "; cin>>nuevo->id;
+        cout<<"Ingrese su nombre: "; cin>>nuevo->nombre;
+        cout<<"\nDatos registrados exitosamente"<<endl<<endl;
+
+       
+        struct nodo *temp = primero;
+        while(temp->id != id){     
+            temp = temp->sig;
+        }
+       
+        nuevo->sig = temp->sig;
+        temp->sig = nuevo;
+    }
+
+void opceliminar(struct nodo *&primero, int &count){
 
     int opc;
 
@@ -143,7 +171,7 @@ void opceliminar(struct nodo *&primero, int count){
         
         case 1: cout<<"\n\tEliminar nodo de una posicion"<<endl; eliminarnodoposc(primero, count); return; break;
 
-        case 2: cout<<"\n\tEliminar nodo despues de una persona"<<endl;  return; break;
+        case 2: cout<<"\n\tEliminar nodo despues de una persona"<<endl; eliminarnodoid(primero,count); return; break;
 
         case 3: cout<<"\n¡Vuelve pronto!"<<endl;
 
@@ -153,7 +181,7 @@ void opceliminar(struct nodo *&primero, int count){
 
 }
 
-void eliminarnodoposc(struct nodo *&primero, int count){
+void eliminarnodoposc(struct nodo *&primero, int &count){
 
     int posc;
     int count2 = 1;
@@ -178,6 +206,26 @@ void eliminarnodoposc(struct nodo *&primero, int count){
     } else {
         cout<<"La posicion digitada es menor a la cantidad de nodos registrados"<<endl;
     }
+}
+
+void eliminarnodoid(struct nodo *primero, int &count){
+
+    int id;
+
+    cout<<"\nIndique el id de la persona despues de la cual desea eliminar el nodo: "; cin>>id;
+
+    struct nodo *temp = primero;
+    
+    while(temp->id != id){
+        temp = temp->sig;
+    }
+
+    struct nodo *eliminado = temp->sig;
+    temp->sig = eliminado->sig;
+
+    count--;
+
+    cout<<"\nNodo eliminado exitosamente"<<endl;
 }
 
 void muestracontenido(struct nodo *primero, int count){
