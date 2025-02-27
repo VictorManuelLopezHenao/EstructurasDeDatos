@@ -85,7 +85,7 @@ void opcinsert(struct nodo *&primero, int &count){
 void agregarnodofinal(struct nodo *&primero){
     struct nodo *nuevo;
     nuevo = new(struct nodo);    //asigna dinamicamente memoria para un nuevo nodo
-                                     // y almacena la direccion de esta en el puntero nuevonodo
+                                // y almacena la direccion de esta en el puntero nuevonodo
     cout<<"\nIngrese su id:  "; cin>>nuevo->id;
     cout<<"Ingrese su nombre: "; cin>>nuevo->nombre;
     cout<<"\nDatos registrados existosamente"<<endl<<endl;
