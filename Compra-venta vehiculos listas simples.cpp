@@ -5,16 +5,13 @@ using namespace std;
 
 void registraV(struct vehiculos *&raiz);  //*& trabaja con el puntero original
 void caracteristicas(struct vehiculos *&raiz);
-void existencia(struct vehiculos *raiz);
-void actualizar(struct vehiculos *&raiz);
+void existencia(struct vehiculos *raiz);   //* trabaja con una copia del puntero
+void actualizar(struct vehiculos *&raiz);   
 void eliminar_activar(struct vehiculos *&raiz);
-void vborrados(struct vehiculos *&raiz, struct eliminados *&raizelim);
-void listaV(struct vehiculos *raiz, struct eliminados *raizelim);
+void vborrados(struct vehiculos *&raiz, struct vehiculos *&eliminado);
+void imprime(struct vehiculos *temp);
+void listaV(struct vehiculos *raiz, struct vehiculos *eliminado, int tipolista);
 
-struct eliminados{
-    struct vehiculos *elim;
-    struct eliminados *esig;
-};
 
 struct vehiculos{
     char placa[7]; char marca[20], modelo[20], color[10], año[5], tipo[2], estado[2];
@@ -29,11 +26,10 @@ struct hojadevida{
 };
 
 
-
 int main(){
 
     struct vehiculos *raiz = NULL;
-    struct eliminados *raizelim = NULL;
+    struct vehiculos *eliminado = NULL;
    
     int opc;
     int opc2;
@@ -71,9 +67,15 @@ int main(){
 
         case 5: cout<<"\n\n\tEliminar o activar vehiculos"<<endl; eliminar_activar(raiz); break;
 
-        case 6: cout<<"\n\n\tMover vehiculos eliminados"<<endl; vborrados(raiz, raizelim); break;
+        case 6: cout<<"\n\n\tMover vehiculos eliminados"<<endl; vborrados(raiz, eliminado); break;
 
-        case 7: cout<<"\n\n\tLista de vehiculos"<<endl; listaV(raiz, raizelim); break;
+        case 7: cout<<"\n\n\tLista de vehiculos"<<endl; 
+                int tipolista;
+                  cout<<"\nElija la lista a consultar: "<<endl;
+                  cout<<"\n1. Vehiculos A-activos"<<endl;
+                  cout<<"2. Vehiculos B-borrados"<<endl;
+                  cout<<"\nSeleccione una opcion: "; cin>>tipolista;
+              listaV(raiz, eliminado, tipolista); break;
 
         case 8: cout<<"\n¡Muchas gracias por visitarnos, vuelve pronto!"<<endl; break;
         
@@ -196,7 +198,7 @@ void existencia(struct vehiculos *raiz){
         cout<<"\n\tVehiculos disponibles"<<endl;
         while(temp != NULL){
           if(strcmp(temp->marca, marcaB)==0){            
-              listaV(temp, NULL); // para llamar a listaV con NULL para raizelim
+              imprime(temp); 
           }
             temp = temp->vsig;
         } break;
@@ -206,7 +208,7 @@ void existencia(struct vehiculos *raiz){
         cout<<"\n\tVehiculos disponibles"<<endl;
         while(temp != NULL){
             if(strcmp(temp->modelo, modeloB)==0){         //cambiar a listaV, por lo que tiene ella adentro.
-               listaV(temp, NULL);
+               imprime(temp);
             }
                temp = temp->vsig;
         } break;
@@ -217,7 +219,7 @@ void existencia(struct vehiculos *raiz){
         cout<<"\nVehiculos disponible"<<endl;
         while(temp != NULL){
          if(precioMIN < temp->precio && precioMAX > temp->precio){
-            listaV(temp, NULL);
+            imprime(temp);
          }
            temp = temp->vsig;
         } break;
@@ -227,7 +229,7 @@ void existencia(struct vehiculos *raiz){
         cout<<"\n\tVehiculos disponibles"<<endl;
         while(temp != NULL){                                   
             if(strcmp(temp->tipo, tipoB)==0){
-                listaV(temp, NULL);
+                imprime(temp);
             }
              temp = temp->vsig;
         } break;
@@ -302,57 +304,58 @@ void eliminar_activar(struct vehiculos *&raiz){
 }
 
 
-void vborrados(struct vehiculos *&raiz, struct eliminados *&raizelim){
+void vborrados(struct vehiculos *&raiz, struct vehiculos *&eliminado){
 
-    struct vehiculos *temp = raiz;
-    struct vehiculos *prev = NULL;
+    struct vehiculos *temp = raiz;  
+    struct vehiculos *ant = NULL;
 
-    while(temp != NULL){
-        if(temp->estado[0] == 'E'){
-            struct eliminados *nuevoElim;
-            nuevoElim = new(struct eliminados);
-            nuevoElim->elim = temp;
-            nuevoElim->esig = raizelim;
-            raizelim = nuevoElim;
-
-            if(prev == NULL) {
-                raiz = temp->vsig;
-            } else {
-                prev->vsig = temp->vsig;
-            }
-
-            struct vehiculos *tempElim = temp;
-            temp = temp->vsig;
-            tempElim->vsig = NULL;
-            
+    while(temp != NULL){            //Recorre la lista hasta el final
+       if(temp->estado[0] == 'E'){      //si el estado del vehiculo es Eliminado
+       
+    struct vehiculos *tempeli = temp;    //se guarda en tempeli el nodo eliminado
+         
+        if(ant == NULL){            //si el nodo a eliminar es el primero
+            raiz = temp->vsig;       //se actualiza la raiz, para que apunte al siguiente
+         }else{
+          ant->vsig = temp->vsig;      //si no, se actualiza ant para que salte el nodo eliminado, y apunte al sgte
+         }
+         
+         temp = temp->vsig;  // Avanza al siguiente nodo antes de modificar el eliminado
+         
+         
+          tempeli->vsig = eliminado;         // Inserta el nodo eliminado al inicio de la lista de eliminados
+          eliminado = tempeli;
+         
         } else {
-            prev = temp;
-            temp = temp->vsig;
+            ant = temp;  //si el vehiculo no es E, ant apunta al nodo actual
+            temp = temp->vsig;  //y temp al siguiente
         }
     }
-    
+
     cout << "\nVehiculos eliminados movidos exitosamente" << endl;
-    return;
 }
 
 
-void listaV(struct vehiculos *raiz, struct eliminados *raizelim){
-
-    int opc;
+void listaV(struct vehiculos *raiz, struct vehiculos *eliminado, int tipolista){
 
     struct vehiculos *temp = raiz;
-   
-
-        cout<<"\nElija la lista a consultar: "<<endl;
-        cout<<"\n1. Vehiculos A-activos"<<endl;
-        cout<<"2. Vehiculos B-borrados"<<endl;
-        cout<<"\nSeleccione una opcion: "; cin>>opc;
-
-        if(opc == 1){
+    
+    if(tipolista == 1){
+        temp = raiz;
+    } else if(tipolista == 2){
+        temp = eliminado;
+    };
 
     while(temp != NULL){
-        
-        cout<<"\nPlaca: "<<temp->placa<<endl;
+        imprime(temp);
+        temp = temp->vsig;
+    }
+}     
+
+
+void imprime(struct vehiculos *temp){
+
+        cout<<"\n\nPlaca: "<<temp->placa<<endl;
         cout<<"Marca: "<<temp->marca<<endl;
         cout<<"Modelo: "<<temp->modelo<<endl;
         cout<<"Color: "<<temp->color<<endl;
@@ -361,37 +364,14 @@ void listaV(struct vehiculos *raiz, struct eliminados *raizelim){
         cout<<"Tipo: "<<temp->tipo<<endl;
         cout<<"Estado: "<<temp->estado<<endl;
 
-        struct hojadevida *temph = temp->hdv;
-        while(temph != NULL){
-            cout<<"Caracteristica: "<<temph->adicionales<<endl;
-            temph = temph->hsig;
-        }
-        temp = temp->vsig;
-     }
+       
+      
+       struct hojadevida *aux = temp->hdv;
+       while (aux != NULL){
+        cout<<"Caracteristica: ";
+        cout<<aux->adicionales<<endl;
+         aux = aux->hsig;
+       }
+}
 
-    } else if(opc==2){
-        struct eliminados *tempElim = raizelim;
-        while(tempElim != NULL) {
-            struct vehiculos *temp = tempElim->elim;
-            cout << "\nPlaca: " << temp->placa << endl;
-            cout << "Marca: " << temp->marca << endl;
-            cout << "Modelo: " << temp->modelo << endl;
-            cout << "Color: " << temp->color << endl;
-            cout << "Año: " << temp->año << endl;
-            cout << "Precio: " << temp->precio << endl;
-            cout << "Tipo: " << temp->tipo << endl;
-            cout << "Estado: " << temp->estado << endl;
-
-            struct hojadevida *temph = temp->hdv;
-            while(temph != NULL) {
-                cout << "Caracteristica: " << temph->adicionales << endl;
-                temph = temph->hsig;
-            }
-            tempElim = tempElim->esig;
-        }
-    } else {
-        cout<<"\nOpcion no valida"<<endl;
-        return;
-    }
-    }
 
