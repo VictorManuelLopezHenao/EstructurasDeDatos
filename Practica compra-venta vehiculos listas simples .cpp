@@ -11,6 +11,7 @@ void eliminar_activar(struct vehiculos *&raiz);
 void vborrados(struct vehiculos *&raiz, struct vehiculos *&eliminado);
 void imprime(struct vehiculos *temp);
 void listaV(struct vehiculos *raiz, struct vehiculos *eliminado, int tipolista);
+void countA_E(struct vehiculos *raiz, struct vehiculos *eliminado);
 
 
 struct vehiculos{
@@ -45,7 +46,8 @@ int main(){
     cout<<"5. Eliminar o activar vehiculos"<<endl;
     cout<<"6. Mover vehiculos eliminados"<<endl;
     cout<<"7. Lista total de vehiculos"<<endl;
-    cout<<"8. Salir"<<endl;
+    cout<<"8. Cantidad de vehiculos"<<endl;
+    cout<<"9. Salir"<<endl;
     cout<<"\nElija una opcion: "; cin>>opc;
 
     switch(opc){
@@ -77,12 +79,15 @@ int main(){
                   cout<<"\nSeleccione una opcion: "; cin>>tipolista;  //Esto sirve para una mejor legibilidad y ejecucion
               listaV(raiz, eliminado, tipolista); break;
 
-        case 8: cout<<"\n¡Muchas gracias por visitarnos, vuelve pronto!"<<endl; break;  //sale del bucle del menú
+        
+        case 8: cout<<"\n\n\tCantidad de vehiculos"<<endl; countA_E(raiz, eliminado); break;
+
+        case 9: cout<<"\n¡Muchas gracias por visitarnos, vuelve pronto!"<<endl; break;  //sale del bucle del menú
         
         default: cout<<"Opcion invalida"<<endl; break;  //si la opc es diferente a las expresadas en el menú, se ejecuta de nuevo el menú
     }
 
-}while(opc!=8); //se ejecuta la primera vez, de ahi en adelante en bucle mientras la opc sea diferente a 8
+}while(opc!=9); //se ejecuta la primera vez, de ahi en adelante en bucle mientras la opc sea diferente a 8
 
     return 0;
 }
@@ -375,3 +380,46 @@ void imprime(struct vehiculos *temp){
 }
 
 
+void countA_E(struct vehiculos *raiz, struct vehiculos *eliminado){
+    
+    int countA = 0;
+    int countE = 0;
+
+    struct vehiculos *temp = raiz;
+
+    while(temp != NULL){
+        temp = temp->vsig;
+        countA++;
+    }
+
+    temp = eliminado;
+   
+    while(temp!=NULL){
+        temp = temp->vsig;
+        countE++;
+    }
+     
+    cout<<"\nCantidad de vehiculos Activos: "<<countA<<endl<<"Cantidad de vehiculos Eliminados: "
+    <<countE<<endl<<"Cantidad total de vehiculos: "<<countA + countE<<endl;
+
+}
+
+
+void ordena_tipo(struct vehiculos *&raiz){
+
+    struct vehiculos *temp = raiz;
+
+    while(temp != NULL){
+        if(strcmp(temp->tipo, "C")==0)
+        imprime(temp);
+        temp=temp->vsig;
+    }
+
+    while(temp != NULL){
+        if(strcmp(temp->tipo, "P")==0){
+            imprime(temp);
+            temp = temp->vsig;
+        }
+    }
+
+}
