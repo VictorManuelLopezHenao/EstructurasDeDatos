@@ -26,6 +26,7 @@ struct hojadevida{
 };
 
 
+
 int main(){
 
     struct vehiculos *raiz = NULL;     //inicio de la lista de vehiculos = NULL
@@ -40,7 +41,7 @@ int main(){
     cout<<"\nMenú de opciones"<<endl;
     cout<<"\n1. Registrar vehiculos"<<endl;
     cout<<"2. Agregar caracteristicas de vehiculos"<<endl;
-    cout<<"3. Existencia de vehiculos"<<endl;
+    cout<<"3. Existencia de vehiculos"<<endl;   
     cout<<"4. Actualizar informacion de vehiculos"<<endl;            //menú
     cout<<"5. Eliminar o activar vehiculos"<<endl;
     cout<<"6. Mover vehiculos eliminados"<<endl;
@@ -106,14 +107,15 @@ void registraV(struct vehiculos *&raiz){
         nuevo->vsig = NULL;     //nuevo en sgte es NULL
         nuevo->hdv = NULL;      //nuevo en hoja de vida es NULL
         raiz = nuevo;           //nuevo será el primer nodo de la lista
-    } else {
+    } else {  
         struct vehiculos *temp = raiz;   //ptr que recorre la lista 
 
         while(temp->vsig != NULL){       //recorre toda la lista nodo por nodo, en este caso busca el nodo final para agg un nuevo nodo
             temp = temp->vsig;     //avanza al sgte nodo
         }
 
-        temp->vsig = nuevo;          //en el sig del nodo final(temp) se asigna la direccion de memoria de nuevo
+        temp->vsig = nuevo;     
+             //en el sig del nodo final(temp) se asigna la direccion de memoria de nuevo
         nuevo->vsig = NULL;          //ahora nuevo es el ultimo nodo      
         nuevo->hdv = NULL;           //Y se le asiga NULL al ptr a hojadevida
     } 
@@ -150,7 +152,7 @@ void caracteristicas(struct vehiculos *&raiz){
 
     if(tempV->hdv == NULL){   //si el vehiculo no tiene hoja de vida
         nuevaH->hsig = NULL;   //sig en hoja de vida es NULL, ya que es el primer nodo de la lista
-        tempV->hdv = nuevaH;      //se guarda en esa posicion la direccion de la hoja de vida digilenciada
+        tempV->hdv = nuevaH;      //se guarda en esa posicion la direccion de la hoja de vida diligenciada
        }
       
        else {      //si el vehiculo tiene hoja de vida 
