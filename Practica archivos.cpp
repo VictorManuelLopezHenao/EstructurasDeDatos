@@ -334,6 +334,7 @@ void registro(){ //registra los datos de los vehiculos
     
 
     cout<<"Marca: "; cin>>vehiculo.marca;
+    
     if (!validarEntrada(vehiculo.marca)) {
         cout << "Entrada inválida. Solo se permiten letras mayúsculas y dígitos." << endl;
         return;
