@@ -1,5 +1,5 @@
 #include<iostream>
-#include<time.h> 
+#include<time.h>  //para la func random
 
 using namespace std;
 
@@ -36,15 +36,23 @@ int main(){
     switch(opc){
         case 1: cout<<"\n\n\tAgregar jugador"<<endl; registrar(cabeza); break;
 
-        case 2: cout<<"\n\n\tEliminar jugador"<<endl; eliminar(cabeza); break;
+        case 2: cout<<"\n\n\tEliminar jugador"<<endl;
+         if(cabeza == NULL){                                  //si no hay jugadores registrados 
+            cout<<"\nNo hay jugadores registrados"<<endl;
+        } else {
+            eliminar(cabeza); }break;
 
         case 3: cout<<"\n\n\tJuego de la ronda"<<endl; 
-         if(cabeza == NULL){                                  //si no hay jugadores registrados 
+         if(cabeza == NULL){                                  
             cout<<"\nNo hay jugadores registrados"<<endl;
         } else {
             elimronda(cabeza);} break;
 
-        case 4: cout<<"\n\n\tLista de jugadores"<<endl; lista(cabeza); break;
+        case 4: cout<<"\n\n\tLista de jugadores"<<endl;
+        if(cabeza == NULL){                                  
+            cout<<"\nNo hay jugadores registrados"<<endl;
+        } else {
+             lista(cabeza);} break;
 
         case 5: cout<<"\nSaliendo, gracias por visitar..."<<endl;
 
@@ -84,37 +92,56 @@ void registrar(struct persona *&cabeza){
 
 void eliminar(struct persona *&cabeza){
 
+ 
     int idB;
-
-    cout<<"\nDigite el id de la persona a eliminar: "; cin>>idB; 
-    
     struct persona *temp = cabeza;
-    struct persona *ant = NULL;  //puntero al nodo anterior 
+    struct persona *ant = NULL;
 
-    while(temp->id != idB){
-       ant = temp;              //se recorre la lista hasta que se encuentre el id
-       temp = temp->sig;
+    cout<<"\nDigite la id de la persona a eliminar: "; cin>>idB;
+
+    if(temp->sig == cabeza){                                           //si hay un solo nodo en la lista
+        if(temp->id == idB){                                    //y la id coincide
+
+            cout<<"\nEliminacion exitosa"<<endl;
+            delete temp;                                        //se borra el nodo
+            cabeza = NULL;                                      //la lista pasa a ser vacia
+            return;                                          //se retorna al menu
+        }
+
+        cout<<"\nIdentificacion no encontrada"<<endl;         
+        return;
     }
+ 
+    do{                                                 //si hay varios nodos en la lista
+        if(temp->id == idB){                                    //y la id coincide
+            if(temp == cabeza){                                     //y es el primer nodo de la lista
+                
+                struct persona *elim = temp;
+                
+                while(elim->sig != cabeza){                     //se busca el ultimo nodo de la lista
+                    elim = elim->sig; }
 
-    if(ant == NULL){        //si ant no ha tomado algun valor, el nodo es la cabeza
-     cabeza = temp->sig;   //la cabeza seria el sgte nodo
-    } else {
+                cabeza = cabeza->sig;                       //la cabeza será el nodo sgte
+                elim->sig = cabeza;                        //se conecta el ultimo nodo con la nueva cabeza
+                
+                cout<<"\nEliminacion exitosa"<<endl;
+                delete temp;                                //se elimina el nodo
+                return;                                     //se retorna al menu
+                }
 
-    struct persona *elim = temp;  //se almacena la direccion del nodo a eliminar
-    ant->sig = elim->sig;  //se conecta el nodo anterior con el siguiente
-
-    delete temp;  //se elimina el nodo
-    }
-   
-    cout<<"\nEliminación exitosa"<<endl;
+                cout<<"\nEliminacion exitosa."<<endl;       //si el nodo no es la cabeza de la lista
+                ant->sig = temp->sig;                           //se conecta el nodo anterior con el sgte
+                delete temp;                              //se elimina el nodo  
+                return;                                   //se retorna al menu
+            }
+        
+        ant = temp;                                    //si la id no coincide
+        temp = temp->sig;                            //se avanza al sgte nodo
+ 
+    }while(temp != cabeza);         //recorre la lista 
 }
 
 void lista(struct persona *cabeza){
-
-    if(cabeza == NULL){
-        cout<<"\nNo hay jugadores registrados"<<endl;  //si no hay jugadores registrados 
-        return;
-    }
 
     struct persona *temp = cabeza;
 
@@ -122,7 +149,7 @@ void lista(struct persona *cabeza){
       cout<<"\nNombre: "<<temp->nombre<<endl;
       cout<<"Id: "<<temp->id<<endl;                //imprime los nodos de la lista
       temp = temp->sig;
-        }while(temp != cabeza);
+        }while(temp != cabeza);       //recorre la lista 
 
 }
 
@@ -137,36 +164,41 @@ int random(){
 
 void elimronda(struct persona *&cabeza){
     
-    int posc = 1;
-    int num = random();
-  
+    int posc = 1;    
+    int num = random();      //el valor de num, depende de lo que devuleva la func random
 
     struct persona *temp = cabeza;
     struct persona *ant = NULL;
 
-    if(cabeza->sig == cabeza){
-        cout<<"\nEl jugador "<<cabeza->nombre<<" ha sido el ganador"<<endl;
-    } else {
+    if(cabeza->sig == cabeza){                                                 //si solo hay un jugador 
+        cout<<"\nEl jugador "<<cabeza->nombre<<" ha sido el ganador"<<endl;       //es el ganador 
+        return;                                                                 //se retorna al menu
+    } 
 
-    random();
+    while(posc != num){                  //se recorre la lista hasta encontrar el nodo en la posicion que arroja el dado
+     ant = temp;
+     temp = temp->sig;
+     posc++;
+    } 
 
-    while(posc != num){      //recorre la lista hasta el numero lanzado por el dado
-        ant = temp; 
-        temp = temp->sig;
-        posc++;
-    }
+       cabeza = temp->sig;     //la nueva cabeza es el sgte del nodo a eliminar
+       ant->sig = cabeza;       //se conecta el nodo anterior al eliminado con la nueva cabeza
+       delete temp;     //se elimina el nodo en la posicion arrojada por el dado
 
-    if(posc == 1){                 
-        cabeza = temp->sig;    //se elimina el primer nodo
-    } else {
+       cout<<"\nEl dado lanzó el numero: "<<num<<endl;
+       cout<<"\nJugador en la posicion "<<posc<<" eliminado"<<endl;
 
-    struct persona *elim = temp;  //almaceno en elim el nodo a eliminar
-    ant->sig = elim->sig;   //conecto el anterior a nodo al nodo siguiente
-    cabeza = elim->sig;  //ahora la nueva cabeza es el siguiente al nodo eliminado
-    delete elim;
- }
-
-    cout<<"\nJugador en la posicion "<<num<<" eliminado"<<endl;
-
-  }
+       if(cabeza->sig == cabeza){                                                //si despues del jugar, queda 1 nodo, ese es el ganador
+       cout<<"\nEl jugador "<<cabeza->nombre<<" ha sido el ganador"<<endl;
+       }
 }
+
+       
+
+
+
+
+    
+
+
+    
