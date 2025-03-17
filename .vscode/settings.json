@@ -48,6 +48,7 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "compra-venta vehiculos punteros": "cpp",
-        "listas simples": "cpp"
+        "listas simples": "cpp",
+        "juegoronda-listasdobles": "cpp"
     }
 }

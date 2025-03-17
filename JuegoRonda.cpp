@@ -54,9 +54,9 @@ int main(){
         } else {
              lista(cabeza);} break;
 
-        case 5: cout<<"\nSaliendo, gracias por visitar..."<<endl;
+        case 5: cout<<"\nSaliendo, gracias por visitar..."<<endl; break;
 
-        default: cout<<"\nOpcion invalida"<<endl;
+        default: cout<<"\nOpcion invalida"<<endl; break;
     }
 
   }while(opc!=5);
@@ -123,22 +123,26 @@ void eliminar(struct persona *&cabeza){
 
                 cabeza = cabeza->sig;                       //la cabeza será el nodo sgte
                 elim->sig = cabeza;                        //se conecta el ultimo nodo con la nueva cabeza
-                
-                cout<<"\nEliminacion exitosa"<<endl;
-                delete temp;                                //se elimina el nodo
-                return;                                     //se retorna al menu
-                }
-
-                cout<<"\nEliminacion exitosa."<<endl;       //si el nodo no es la cabeza de la lista
+                                                             
+            } else {
+                                                                 //si el nodo no es la cabeza de la lista
                 ant->sig = temp->sig;                           //se conecta el nodo anterior con el sgte
-                delete temp;                              //se elimina el nodo  
-                return;                                   //se retorna al menu
+                                              
             }
+           
+            cout<<"\nEliminacion exitosa"<<endl;
+            delete temp;                                //se elimina el nodo
+            return;                                    //se retorna al menu
+          
+        }
         
         ant = temp;                                    //si la id no coincide
         temp = temp->sig;                            //se avanza al sgte nodo
  
     }while(temp != cabeza);         //recorre la lista 
+   
+    cout<<"\nEl id ingresado no coincide con el de ningun jugador"<<endl;
+
 }
 
 void lista(struct persona *cabeza){
@@ -181,6 +185,7 @@ void elimronda(struct persona *&cabeza){
      posc++;
     } 
 
+    
        cabeza = temp->sig;     //la nueva cabeza es el sgte del nodo a eliminar
        ant->sig = cabeza;       //se conecta el nodo anterior al eliminado con la nueva cabeza
        delete temp;     //se elimina el nodo en la posicion arrojada por el dado
