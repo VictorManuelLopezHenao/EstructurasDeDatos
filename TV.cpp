@@ -179,6 +179,7 @@ void agregaP(struct canales *&cabeza){
     cout<<"2. No"<<endl;                                    
     cout<<"\nElija una opcion: "; cin>>opc;   
 
+
     }while(opc!=2);    
 
     cout<<"\nPrograma agregado exitosamente"<<endl;
@@ -186,6 +187,11 @@ void agregaP(struct canales *&cabeza){
 
 void guiacanales(struct canales *cabeza){
 
+    if (cabeza == NULL){
+        cout << "\nNo hay canales registrados" << endl;
+        return;
+    }
+  
     struct canales *temp = cabeza;
    
     do{
@@ -206,6 +212,7 @@ void guiacanales(struct canales *cabeza){
         }
 
         temp = temp->sig;
+        cout<<"- - - - - - - - - - - - - - - - - - - - - -"<<endl;
 
     }while(temp!=cabeza);
 
