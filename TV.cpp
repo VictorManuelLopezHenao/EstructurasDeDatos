@@ -5,6 +5,8 @@ using namespace std;
 void registraC(struct canales *&cabeza);
 void agregaP(struct canales *&cabeza);
 void guiacanales(struct canales *cabeza);
+void elimcanal(struct canales *&cabeza);
+void elimprog(struct canales *&cabeza);
 
 struct canales{
     int num;
@@ -57,12 +59,20 @@ int main(){
 
             case 3: cout<<"\n\n\tConsultar informacion de un canal"<<endl; break;
 
-            case 4: cout<<"\n\n\tEliminar canales de la guia"<<endl; break;
+            case 4: cout<<"\n\n\tEliminar canales de la guia"<<endl;
+            if (cabeza == NULL) {
+                cout << "\nNo hay canales registrados" << endl;
+                } else {
+                elimcanal(cabeza);} break;
 
-            case 5: cout<<"\n\n\tEliminar toda la programacion de un canal"<<endl; break;
+            case 5: cout<<"\n\n\tEliminar toda la programacion de un canal"<<endl;
+            if (cabeza == NULL) {
+                cout << "\nNo hay canales registrados" << endl;
+                } else {
+                elimprog(cabeza);} break; 
 
             case 6: cout<<"\n\n\tMostrar guia de canales"<<endl; 
-                if (cabeza == NULL) {
+            if (cabeza == NULL) {
                 cout << "\nNo hay canales registrados" << endl;
                 } else {
                 guiacanales(cabeza);} break;
@@ -119,7 +129,6 @@ void registraC(struct canales *&cabeza){
 
     cout<<"\nRegistro exitoso"<<endl;
 }
-           
 
 void agregaP(struct canales *&cabeza){
 
@@ -218,3 +227,82 @@ void guiacanales(struct canales *cabeza){
 
 }
 
+void elimcanal(struct canales *&cabeza){
+
+    int numB;
+    struct canales *temp = cabeza;
+
+
+    cout<<"\nDigite el numero del canal a eliminar: "; cin>>numB;
+
+    if(temp->sig == cabeza){
+       if(temp->num == numB){
+        cout<<"\nEliminacion exitosa"<<endl;
+        delete temp;
+        cabeza = NULL;
+        return;
+    }
+    
+    cout<<"\nEl canal no fue encontrado"<<endl;
+    return;
+   }
+
+
+   do{
+    if(temp->num == numB){
+        if(temp == cabeza){
+
+            cabeza = temp->sig;
+            cabeza->ant = temp->ant;
+            temp->ant->sig = cabeza;
+
+        } else {
+
+            struct canales *elim = temp->ant;
+
+            elim->sig = temp->sig;
+            temp->sig->ant = elim;
+
+        }
+
+        cout<<"\nELiminacion exitosa"<<endl;
+        delete temp;
+        return;
+    
+    
+    }
+    temp = temp->sig;
+
+   }while(temp!=cabeza);
+
+   cout<<"\nCanal no encontrado"<<endl;
+}
+
+void elimprog(struct canales *&cabeza){
+
+    int numB;
+    struct canales *temp = cabeza;
+
+    cout<<"\nDigite el numero del canal al cual eliminarle toda la programacion: "; cin>>numB;
+
+    do{
+        if(temp->num == numB){
+            struct programas *eprog = temp->prog;
+            
+            if(eprog == NULL){
+                cout<<"\nEste canal no tiene programas registrados"<<endl;
+                return;
+            }
+
+            cout<<"\nEliminacion exitosa"<<endl;
+    
+            delete eprog;
+            temp->prog = NULL;
+        } else {
+            temp = temp->sig;
+        }
+
+    }while(temp!=cabeza);
+    
+    cout<<"\nCanal no encontrado"<<endl;
+}
