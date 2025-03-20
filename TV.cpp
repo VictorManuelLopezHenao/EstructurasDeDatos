@@ -29,10 +29,9 @@ struct programas{
 
 int main(){
 
-    int opc, opc2;
+    int opc;
 
     struct canales *cabeza = NULL;
-
 
     cout<<"\n\tBienvenido a la television"<<endl;
 
@@ -49,14 +48,7 @@ int main(){
         cout<<"\nOpcion: "; cin>>opc;
 
         switch(opc){
-            case 1: cout<<"\n\n\tAgregar canales a la parrilla"<<endl; registraC(cabeza);
-                cout<<"\n¿Desea agregar un programa al canal?"<<endl;   
-                cout<<"\n1. Si"<<endl;
-                cout<<"2. No"<<endl;                       
-                cout<<"\nElija una opcion: "; cin>>opc2;
-                  if(opc2 == 1){
-                     agregaP(cabeza);
-                  }; break;
+            case 1: cout<<"\n\n\tAgregar canales a la parrilla"<<endl; registraC(cabeza);  break;
 
             case 2: cout<<"\n\n\tAgregar programas a un canal"<<endl; 
             if (cabeza == NULL) {
@@ -115,6 +107,15 @@ void registraC(struct canales *&cabeza){
         cabeza->prog = NULL;
     
     } else {
+
+        do{
+            if(temp->num == nuevo->num){
+                cout<<"\nYa hay un canal registrado con ese numero"<<endl;
+                return;
+            }
+            temp = temp->sig;
+
+        }while(temp!=cabeza);
        
         if(nuevo->num <= cabeza->num){
             
@@ -140,9 +141,19 @@ void registraC(struct canales *&cabeza){
     }
 
     cout<<"\nRegistro exitoso"<<endl;
+    
+    int opc2;
+
+    cout<<"\n¿Desea agregar un programa al canal?"<<endl;   
+                cout<<"\n1. Si"<<endl;
+                cout<<"2. No"<<endl;                       
+                cout<<"\nElija una opcion: "; cin>>opc2;
+                  if(opc2 == 1){
+                     agregaP(cabeza);
+                  };
 }
 
-void agregaP(struct canales *&cabeza){        //problemas con el ordenamiento segun franja horaria en el 3 nodo
+void agregaP(struct canales *&cabeza){
 
     int canalB, opc;
     bool encontrado = false;
@@ -176,39 +187,56 @@ void agregaP(struct canales *&cabeza){        //problemas con el ordenamiento se
     cout<<"\nIngrese el nombre del programa: "; cin.ignore(); cin.getline(nuevop->nombre, 30);
     cout<<"Ingrese la clasificacion del programa: "; cin.getline(nuevop->clasificacion, 20);
     cout<<"\nRecuerde que la duracion de cada programa es de 1 hora";
-    cout<<"\nIngrese la hora de inicio del programa (en este formato xx.00): "; cin>>nuevop->franjah;
-    
+    cout<<"\nIngrese la hora de inicio del programa: "; cin>>nuevop->franjah;
+
+    struct programas *verifi = temp->prog;
+    while(verifi != NULL){
+        if(verifi->franjah == nuevop->franjah){
+            cout<<"\nFranja horaria no disponible"<<endl;
+            return;
+        }
+        verifi = verifi->sig;
+    }
+
     if(temp->prog == NULL){
         temp->prog = nuevop;
         nuevop->sig = NULL;
         nuevop->ant = NULL;
     } else {
-        struct programas *tempP = temp->prog;
         
-        if(nuevop->franjah <= tempP->franjah){
-            
-   
+        struct programas *tempP = temp->prog;
+    
+        if(nuevop->franjah < tempP->franjah){
+             
             nuevop->ant = NULL;
             nuevop->sig = tempP;
-            tempP->ant = nuevop;
+            tempP->ant = nuevop;        //menor que la cabeza
             temp->prog = nuevop;
-
+            
         } else {
-            while(tempP->sig != NULL && tempP->sig->franjah < nuevop->franjah){
-                tempP = tempP->sig;
-            }
 
-            tempP->sig = nuevop;
-            nuevop->sig = NULL;
-            nuevop->ant = tempP;
+        while(tempP->sig != NULL && tempP->sig->franjah < nuevop->franjah){
+            tempP = tempP->sig;
         }
-
-    }
+        
+        if(tempP->sig == NULL){
+            tempP->sig = nuevop;
+            nuevop->sig = NULL;                   //ultimo
+            nuevop->ant = tempP;
+        } else {
+        
+                tempP->sig = nuevop;                          //intermedio
+                nuevop->sig = tempP->sig;
+                nuevop->ant = tempP;
+        }
+   }
+}
     
     cout<<"\n¿Desea agregar mas programas?"<<endl;
     cout<<"\n1. Si"<<endl;                                
     cout<<"2. No"<<endl;                                    
     cout<<"\nElija una opcion: "; cin>>opc;   
+    
 
 
     }while(opc!=2);    
@@ -343,6 +371,7 @@ void elimprog(struct canales *&cabeza){
 
 void guiacanales(struct canales *cabeza){
 
+
     struct canales *temp = cabeza;
    
     do{
@@ -353,10 +382,16 @@ void guiacanales(struct canales *cabeza){
         
         struct programas *tempP = temp->prog;
 
-        while(tempP != NULL){
+
+        if(temp->prog == NULL){
+            temp = temp->sig;}
+            else {
+
+         cout<<"\nProgramas: "<<endl;
+      
+         while(tempP != NULL){
             
-            cout<<"\nPrograma: "<<endl;
-           
+
             cout<<"\nNombre: "<<tempP->nombre<<endl;
             cout<<"Clasificacion: "<<tempP->clasificacion<<endl;
             cout<<"Franja horaria: "<<tempP->franjah<<endl;
@@ -366,6 +401,7 @@ void guiacanales(struct canales *cabeza){
 
         temp = temp->sig;
         cout<<"- - - - - - - - - - - - - - - - - - - - - -"<<endl;
+    }
 
     }while(temp!=cabeza);
 
