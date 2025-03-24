@@ -1,5 +1,6 @@
 #include<iostream>
 #include<cstring>
+#include<conio.h>
 
 using namespace std;
 
@@ -10,7 +11,6 @@ void elimcanal(struct canales *&cabeza);
 void elimprog(struct canales *&cabeza);
 void guiacanales(struct canales *cabeza);
 
-
 struct canales{
     int num;
     char nombre[30];
@@ -20,7 +20,7 @@ struct canales{
 };
 
 struct programas{
-    float franjah;
+    int franjah;
     char nombre[30];
     char clasificacion[20];
      struct programas *sig;
@@ -108,22 +108,26 @@ void registraC(struct canales *&cabeza){
     
     } else {
 
+        struct canales *verifi = cabeza;
         do{
-            if(temp->num == nuevo->num){
+
+            if(verifi->num == nuevo->num){
                 cout<<"\nYa hay un canal registrado con ese numero"<<endl;
+                delete nuevo;
                 return;
             }
-            temp = temp->sig;
+            verifi = verifi->sig;
 
-        }while(temp!=cabeza);
+        }while(verifi != cabeza);
        
-        if(nuevo->num <= cabeza->num){
+        if(nuevo->num < cabeza->num){
             
             nuevo->ant = cabeza->ant;
-            nuevo->sig = cabeza;
-            cabeza->ant = nuevo;                   
+            nuevo->sig = cabeza;                  
             cabeza->ant->sig = nuevo;   
+            cabeza->ant = nuevo; 
             cabeza = nuevo;
+            nuevo->prog = NULL;
        
         } else {                             
                                     
@@ -166,11 +170,9 @@ void agregaP(struct canales *&cabeza){
         if(temp->num == canalB){
             encontrado = true;
             break;
-           
         }
         temp = temp->sig;
        
-
     }while(temp!=cabeza);
 
     if(encontrado == false){
@@ -193,6 +195,7 @@ void agregaP(struct canales *&cabeza){
     while(verifi != NULL){
         if(verifi->franjah == nuevop->franjah){
             cout<<"\nFranja horaria no disponible"<<endl;
+            delete nuevop;
             return;
         }
         verifi = verifi->sig;
@@ -200,14 +203,13 @@ void agregaP(struct canales *&cabeza){
 
     if(temp->prog == NULL){
         temp->prog = nuevop;
-        nuevop->sig = NULL;
-        nuevop->ant = NULL;
+        nuevop->sig = NULL;         //primer nodo
+        nuevop->ant = NULL;     
     } else {
         
         struct programas *tempP = temp->prog;
     
         if(nuevop->franjah < tempP->franjah){
-             
             nuevop->ant = NULL;
             nuevop->sig = tempP;
             tempP->ant = nuevop;        //menor que la cabeza
@@ -224,10 +226,10 @@ void agregaP(struct canales *&cabeza){
             nuevop->sig = NULL;                   //ultimo
             nuevop->ant = tempP;
         } else {
-        
-                tempP->sig = nuevop;                          //intermedio
                 nuevop->sig = tempP->sig;
                 nuevop->ant = tempP;
+                tempP->sig->ant = nuevop;
+                tempP->sig = nuevop;                          //intermedio
         }
    }
 }
@@ -236,8 +238,6 @@ void agregaP(struct canales *&cabeza){
     cout<<"\n1. Si"<<endl;                                
     cout<<"2. No"<<endl;                                    
     cout<<"\nElija una opcion: "; cin>>opc;   
-    
-
 
     }while(opc!=2);    
 
@@ -264,7 +264,7 @@ void consultar(struct canales *cabeza){
     
     do{  
             if((strcmp(temp->nombre, nombreB)==0) || (temp->num == numB)){
-                cout<<"\nNombre: "<<temp->nombre<<endl;
+                cout<<"\nNombre del canal: "<<temp->nombre<<endl;
                 cout<<"Numero: "<<temp->num<<endl;
 
                 struct programas *prog = temp->prog;
@@ -273,9 +273,9 @@ void consultar(struct canales *cabeza){
 
                     cout<<"\nProgramas: "<<endl;
 
-                    cout<<"\nNombre: "<<prog->nombre<<endl;
+                    cout<<"\nNombre del programa: "<<prog->nombre<<endl;
                     cout<<"Clasificacion: "<<prog->clasificacion<<endl;
-                    cout<<"Franja Horaria: "<<prog->franjah<<endl;
+                    cout<<"Franja Horaria: "<<prog->franjah<<":00"<<endl;
                     
                     prog = prog->sig;
                 }
@@ -294,11 +294,19 @@ void elimcanal(struct canales *&cabeza){
     int numB;
     struct canales *temp = cabeza;
 
-
     cout<<"\nDigite el numero del canal a eliminar: "; cin>>numB;
 
-    if(temp->sig == cabeza){
+    if(temp->sig == cabeza){   //si solo hay un nodo
        if(temp->num == numB){
+
+        struct programas *tempP = temp->prog;
+        while(tempP != NULL){                             
+            struct programas *elim = tempP;
+            tempP = tempP->sig;
+            delete elim;
+        }
+        temp->prog = NULL;
+
         cout<<"\nEliminacion exitosa"<<endl;
         delete temp;
         cabeza = NULL;
@@ -312,6 +320,15 @@ void elimcanal(struct canales *&cabeza){
 
    do{
     if(temp->num == numB){
+
+        struct programas *tempP = temp->prog;
+        while(tempP != NULL){
+            struct programas *elim = tempP;     //elimina todos los programas
+            tempP = tempP->sig;
+            delete elim;
+        }
+        temp->prog = NULL;
+        
         if(temp == cabeza){
 
             cabeza = temp->sig;
@@ -331,7 +348,6 @@ void elimcanal(struct canales *&cabeza){
         delete temp;
         return;
     
-    
     }
     temp = temp->sig;
 
@@ -349,17 +365,24 @@ void elimprog(struct canales *&cabeza){
 
     do{
         if(temp->num == numB){
-            struct programas *eprog = temp->prog;
             
-            if(eprog == NULL){
+            struct programas *tempP = temp->prog;
+            
+            if(tempP == NULL){
                 cout<<"\nEste canal no tiene programas registrados"<<endl;
                 return;
             }
 
-            cout<<"\nEliminacion exitosa"<<endl;
+            while(tempP != NULL){
+                struct programas *elim = tempP;
+                tempP = tempP->sig;
+                delete elim;
+            }
     
-            delete eprog;
             temp->prog = NULL;
+            cout<<"\nEliminacion exitosa"<<endl;
+            return;
+
         } else {
             temp = temp->sig;
         }
@@ -368,43 +391,78 @@ void elimprog(struct canales *&cabeza){
     
     cout<<"\nCanal no encontrado"<<endl;
 }
-
+ 
 void guiacanales(struct canales *cabeza){
 
-
     struct canales *temp = cabeza;
-   
-    do{
+    struct programas *tempP = temp->prog; 
+    bool verifica = true;
+ 
+    cout<<"\nGuía de canales"<<endl;
+    cout<<"\n1. Flecha arriba y flecha abajo para moverse por los canales"<<endl;
+    cout<<"2. Flecha izquierda y flecha derecha para moverse por los programas"<<endl;
+    cout<<"3. Esc o Enter para volver"<<endl;
 
-        cout<<"\nNombre: "<<temp->nombre<<endl;
-        cout<<"Numero: "<<temp->num<<endl; 
-       
-        
-        struct programas *tempP = temp->prog;
+    cout<<"\n\nNombre del canal: "<<temp->nombre << endl;
+    cout<<"Número: "<<temp->num << endl;
+    
 
+    int tecla = getch();
 
-        if(temp->prog == NULL){
-            temp = temp->sig;}
-            else {
+    while (tecla != 27 && tecla != 13) {
 
-         cout<<"\nProgramas: "<<endl;
-      
-         while(tempP != NULL){
-            
+        switch (tecla) {
 
-            cout<<"\nNombre: "<<tempP->nombre<<endl;
-            cout<<"Clasificacion: "<<tempP->clasificacion<<endl;
-            cout<<"Franja horaria: "<<tempP->franjah<<endl;
-            
-            tempP = tempP->sig;
+            case 72: // canal siguiente
+                    temp = temp->sig; 
+                    tempP = temp->prog; 
+
+                    cout<<"\nNombre del canal: "<<temp->nombre<<endl;
+                    cout<<"Número: "<<temp->num<<endl;
+                    verifica = true;
+                
+                break;
+
+            case 80: // canal anterior
+                    temp = temp->ant; 
+                    tempP = temp->prog; 
+                    
+                    cout<<"\nNombre del canal: "<<temp->nombre<<endl;
+                    cout<<"Número: "<<temp->num<<endl;
+                    verifica = true;
+                
+                break;
+
+            case 75: // programa anterior
+                    if (tempP && tempP->ant) {
+                    tempP = tempP->ant;
+                    cout<<"\nNombre del programa: "<<tempP->nombre<<endl;
+                    cout<<"Clasificación: "<<tempP->clasificacion<<endl;
+                    cout<<"Franja Horaria: "<<tempP->franjah<<":00"<<endl;
+                    verifica = true;
+                }
+                break;
+
+            case 77: // programa siguiente
+            if (tempP && verifica == true) { 
+
+                cout<<"\nNombre del programa: "<<tempP->nombre<<endl;
+                cout<<"Clasificación: "<<tempP->clasificacion<<endl;  
+                cout<<"Franja Horaria: "<<tempP->franjah<<":00"<<endl;
+                
+                if(tempP->sig != NULL){
+                    tempP = tempP->sig; 
+                } else {
+                    verifica = false;
+                }
+                  
+             }
+            break;
+
+            default: break;
         }
 
-        temp = temp->sig;
-        cout<<"- - - - - - - - - - - - - - - - - - - - - -"<<endl;
+        tecla = getch();
     }
-
-    }while(temp!=cabeza);
-
 }
-
-
+             
