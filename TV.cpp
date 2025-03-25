@@ -19,9 +19,9 @@ struct canales{
      struct programas *prog;
 };
 
-struct programas{
-    int franjah;
-    char nombre[30];
+struct programas{           //le deje coments
+    int franjah;            //pa ver si el exnovio
+    char nombre[30];        //aun se la come
     char clasificacion[20];
      struct programas *sig;
      struct programas *ant;
