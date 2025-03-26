@@ -1,6 +1,6 @@
 #include<iostream>
-#include<cstring>
-#include<conio.h>
+#include<cstring>  //strcmp
+#include<conio.h>  //Para las flechas
 
 using namespace std;
 
@@ -19,9 +19,9 @@ struct canales{
      struct programas *prog;
 };
 
-struct programas{           //le deje coments
-    int franjah;            //pa ver si el exnovio
-    char nombre[30];        //aun se la come
+struct programas{          
+    int franjah;          
+    char nombre[30];       
     char clasificacion[20];
      struct programas *sig;
      struct programas *ant;
@@ -118,7 +118,7 @@ void registraC(struct canales *&cabeza){
             }
             verifi = verifi->sig;
 
-        }while(verifi != cabeza);
+        }while(verifi != cabeza);  
        
         if(nuevo->num < cabeza->num){     //si el num del nuevo canal es menor a el de la cabeza de la lista
             
@@ -131,11 +131,11 @@ void registraC(struct canales *&cabeza){
        
         } else {                    //si el numero es mayor
                                     
-            while(temp->sig != cabeza && temp->sig->num < nuevo->num){  //se va recorriendo la lista y busca canal por canal 
-                temp = temp->sig;           //un canal donde el numero del nuevo canal sea mayor
-                                            //y se ingresa 
-            }                               
-                                    
+            while(temp->sig != cabeza && temp->sig->num < nuevo->num){  //se recorre la lista 
+                temp = temp->sig;           //buscando la posc correcta para insertar el nuevo canal
+                                            //cuando el nuevo numero sea mayor al de algun canal
+            }                              
+                                
                                      
             nuevo->sig = temp->sig;    
             nuevo->ant = temp;
@@ -221,9 +221,9 @@ void agregaP(struct canales *&cabeza){
             
         } else {    //si la hora del nuevo prog no es menor a la de la cabeza de la lista
 
-        while(tempP->sig != NULL && tempP->sig->franjah < nuevop->franjah){ //se recorre toda la lista y busca prog por prog
-            tempP = tempP->sig;   
-        }
+        while(tempP->sig != NULL && tempP->sig->franjah < nuevop->franjah){ //se recorre toda la lista 
+            tempP = tempP->sig;            //buscando la posc correcta para insertar un nuevo programa
+        }                                  //cuando la nueva hora sea mayor a la de algun programa
         
         if(tempP->sig == NULL){   //si se recorrio toda la lista, este prog se ingresa en la ultima posc
             tempP->sig = nuevop;
@@ -256,41 +256,41 @@ void consultar(struct canales *cabeza){
     struct canales *temp = cabeza;
 
     cout<<"\n¿Por que medio desea hacer la consulta?"<<endl;
-    cout<<"\n1. Nombre del canal"<<endl;
+    cout<<"\n1. Nombre del canal"<<endl;                           //medios de busqueda
     cout<<"2. Numero del canal"<<endl;
     cout<<"\nElija una opcion: "; cin>>opc;
 
     if(opc==1){
         cout<<"\nDigite el nombre del canal: "; cin.ignore(); cin.getline(nombreB, 30);
     } else {
-        cout<<"\nDigite el numero del canal: "; cin>>numB;
+        cout<<"\nDigite el numero del canal: "; cin>>numB;      //se solicita la informacion
     }
     
-    do{  
-            if((strcmp(temp->nombre, nombreB)==0) || (temp->num == numB)){
-                cout<<"\nNombre del canal: "<<temp->nombre<<endl;
-                cout<<"Numero: "<<temp->num<<endl;
+    do{      //se recorre toda la lista
+            if((strcmp(temp->nombre, nombreB)==0) || (temp->num == numB)){  //se hace la busqueda canal por canal
+                cout<<"\nNombre del canal: "<<temp->nombre<<endl; //de el dato ingresado por el usuario
+                cout<<"Numero: "<<temp->num<<endl;                //si se encuentran, se imprimen los datos del canal
 
                 struct programas *prog = temp->prog;
 
-                while(prog != NULL){
+                while(prog != NULL){      //si el canal tiene programas  
 
-                    cout<<"\nProgramas: "<<endl;
+                    cout<<"\nProgramas: "<<endl;          
 
                     cout<<"\nNombre del programa: "<<prog->nombre<<endl;
                     cout<<"Clasificacion: "<<prog->clasificacion<<endl;
                     cout<<"Franja Horaria: "<<prog->franjah<<":00"<<endl;
                     
-                    prog = prog->sig;
+                    prog = prog->sig;    //recorre la lista e imprime la informacion de cada prog
                 }
-                return;
+                return;  //retorna a al menu
             } 
         
     temp = temp->sig;
     
     }while(temp!=cabeza);
 
-    cout<<"\nCanal no encontrado"<<endl;
+    cout<<"\nCanal no encontrado"<<endl;     //si el canal no fue encontrado
 }
 
 void elimcanal(struct canales *&cabeza){
@@ -300,64 +300,64 @@ void elimcanal(struct canales *&cabeza){
 
     cout<<"\nDigite el numero del canal a eliminar: "; cin>>numB;
 
-    if(temp->sig == cabeza){   //si solo hay un nodo
-       if(temp->num == numB){
+    if(temp->sig == cabeza){   //si solo hay un canal
+       if(temp->num == numB){      //y su numero coincide con el del canal a eliminar
 
-        struct programas *tempP = temp->prog;
-        while(tempP != NULL){                             
-            struct programas *elim = tempP;
-            tempP = tempP->sig;
-            delete elim;
+        struct programas *tempP = temp->prog;      //Si el canal contiene programas
+        while(tempP != NULL){                     //se va recorriendo la lista de programas
+            struct programas *elim = tempP;       //se crea el puntero elim para no perder la conexion de la lista
+            tempP = tempP->sig;                   //se avanza al siguiente prog
+            delete elim;                          //se libera espacio en memoria de este prog
         }
-        temp->prog = NULL;
+        temp->prog = NULL;                       //la cabeza de la lista de programas es NULL
 
         cout<<"\nEliminacion exitosa"<<endl;
-        delete temp;
-        cabeza = NULL;
-        return;
+        delete temp;                              //Se elimina el canal
+        cabeza = NULL;                            //La cabeza de la lista de canales es NULL
+        return;                                   //se retorna al menu
     }
     
     cout<<"\nEl canal no fue encontrado"<<endl;
     return;
    }
 
-
-   do{
-    if(temp->num == numB){
+                                 //si hay varios canales registrados
+   do{                             //se va recorriendo la lista de canales
+    if(temp->num == numB){       //en busca del canal a eliminar
 
         struct programas *tempP = temp->prog;
-        while(tempP != NULL){
-            struct programas *elim = tempP;     //elimina todos los programas
+        while(tempP != NULL){                   //si el canal contiene programas
+            struct programas *elim = tempP;     //Elimina o libera espacio en memoria de todos los programas 
             tempP = tempP->sig;
             delete elim;
         }
-        temp->prog = NULL;
+        temp->prog = NULL;                //la cabeza de la lista de canales es NULL
         
-        if(temp == cabeza){
+        if(temp == cabeza){        //si el canal a eliminar es la cabeza de la lista
 
-            cabeza = temp->sig;
-            cabeza->ant = temp->ant;
-            temp->ant->sig = cabeza;
+            cabeza = temp->sig;       
+            cabeza->ant = temp->ant;     //La nueva cabeza es el siguiente canal de la lista
+            temp->ant->sig = cabeza;     
 
-        } else {
+        } else {                 //si el canal a eliminar NO es la cabeza de la lista
 
             struct canales *elim = temp->ant;
 
-            elim->sig = temp->sig;
+            elim->sig = temp->sig;       //se hace la conexion de su anterior con su siguiente
             temp->sig->ant = elim;
 
         }
 
         cout<<"\nELiminacion exitosa"<<endl;
-        delete temp;
-        return;
+        delete temp;                //se elimina el canal
+        return;                     //se retorna al menu
     
     }
     temp = temp->sig;
 
    }while(temp!=cabeza);
 
-   cout<<"\nCanal no encontrado"<<endl;
+   cout<<"\nCanal no encontrado"<<endl;    //si el canal no fue encontrado
 }
 
 void elimprog(struct canales *&cabeza){
@@ -367,25 +367,25 @@ void elimprog(struct canales *&cabeza){
 
     cout<<"\nDigite el numero del canal al cual eliminarle toda la programacion: "; cin>>numB;
 
-    do{
-        if(temp->num == numB){
+    do{     //se va recorriendo la lista de canales 
+        if(temp->num == numB){    //se busca el canal al cual elimianarle toda la programacion
             
             struct programas *tempP = temp->prog;
             
-            if(tempP == NULL){
+            if(tempP == NULL){    //si el canal no tiene programas
                 cout<<"\nEste canal no tiene programas registrados"<<endl;
-                return;
+                return;   //se retorna al menu
             }
 
-            while(tempP != NULL){
+            while(tempP != NULL){     //Si tiene programas se va recorriendo la lista de programas
                 struct programas *elim = tempP;
-                tempP = tempP->sig;
-                delete elim;
+                tempP = tempP->sig;            
+                delete elim;           //Y se va eliminando uno por uno cada programa
             }
     
-            temp->prog = NULL;
+            temp->prog = NULL;      //la cabeza de la lista de programas es NULL
             cout<<"\nEliminacion exitosa"<<endl;
-            return;
+            return;          //se retorna al menu
 
         } else {
             temp = temp->sig;
@@ -393,7 +393,7 @@ void elimprog(struct canales *&cabeza){
 
     }while(temp!=cabeza);
     
-    cout<<"\nCanal no encontrado"<<endl;
+    cout<<"\nCanal no encontrado"<<endl;     //si el canal no fue encontrado
 }
  
 void guiacanales(struct canales *cabeza){
@@ -408,65 +408,67 @@ void guiacanales(struct canales *cabeza){
     cout<<"3. Esc o Enter para volver"<<endl;
 
     cout<<"\n\nNombre del canal: "<<temp->nombre << endl;
-    cout<<"Número: "<<temp->num << endl;
+    cout<<"Número: "<<temp->num << endl;                      //muestra el primer canal
     
 
-    int tecla = getch();
+    int tecla = getch();   //se captura la tecla presionada
 
-    while (tecla != 27 && tecla != 13) {
+    while (tecla != 27 && tecla != 13) {  //tecla 27 = esc , tecla 13 = enter
 
         switch (tecla) {
 
-            case 72: // canal siguiente
-                    temp = temp->sig; 
-                    tempP = temp->prog; 
+            case 72: // Flecha arriba - canal siguiente                
+                    temp = temp->sig;          //se mueve al siguiente canal
+                    tempP = temp->prog;       // Actualizar el puntero de programas al primer programa del nuevo canal
 
-                    cout<<"\nNombre del canal: "<<temp->nombre<<endl;
+                    cout<<"\nNombre del canal: "<<temp->nombre<<endl;      //muestra la info del canal
                     cout<<"Número: "<<temp->num<<endl;
-                    verifica = true;
+                    verifica = true;  //Permite avanzar al sig programa
                 
                 break;
 
-            case 80: // canal anterior
-                    temp = temp->ant; 
-                    tempP = temp->prog; 
+            case 80: //Flecha abajo - canal anterior            
+                    temp = temp->ant;     //se mueve al canal anterior
+                    tempP = temp->prog;   // Actualizar el puntero de programas al primer programa del nuevo canal
+
                     
-                    cout<<"\nNombre del canal: "<<temp->nombre<<endl;
+                    cout<<"\nNombre del canal: "<<temp->nombre<<endl;        //muestra la info del canal
                     cout<<"Número: "<<temp->num<<endl;
-                    verifica = true;
+                    verifica = true;   //Permite avanzar al sig programa
                 
                 break;
 
-            case 75: // programa anterior
-                    if (tempP && tempP->ant) {
-                    tempP = tempP->ant;
+            case 75: //Flecha izquierda - programa anterior             
+                    if (tempP && tempP->ant) {    //Verifica que haya un prog anterior
+                    tempP = tempP->ant;           //Se mueve al programa anterior
+
                     cout<<"\nNombre del programa: "<<tempP->nombre<<endl;
-                    cout<<"Clasificación: "<<tempP->clasificacion<<endl;
+                    cout<<"Clasificación: "<<tempP->clasificacion<<endl;    //se muestra la info del prog
                     cout<<"Franja Horaria: "<<tempP->franjah<<":00"<<endl;
-                    verifica = true;
+                    verifica = true;    //Permite avanzar al siguiente programa
                 }
                 break;
 
-            case 77: // programa siguiente
-            if (tempP && verifica == true) { 
+            case 77: //Flecha derecha - programa siguiente          
+            if (tempP && verifica == true) {   //verifica si se puede avanzar al sig programa
 
                 cout<<"\nNombre del programa: "<<tempP->nombre<<endl;
-                cout<<"Clasificación: "<<tempP->clasificacion<<endl;  
+                cout<<"Clasificación: "<<tempP->clasificacion<<endl;     //se muestra la info del prog
                 cout<<"Franja Horaria: "<<tempP->franjah<<":00"<<endl;
                 
-                if(tempP->sig != NULL){
-                    tempP = tempP->sig; 
-                } else {
-                    verifica = false;
+                if(tempP->sig != NULL){      //verifica si ya se recorrió toda la lista de programas
+                    tempP = tempP->sig;      //si no, avanza a su sig programa
+                } else {                    
+                    verifica = false;     //si ya se recorrio toda, no permite avanzar mas
                 }
                   
              }
             break;
 
-            default: break;
+            default: break;   //ignora otras teclas
         }
 
-        tecla = getch();
+        tecla = getch();   //se captura la sig tecla presionada
     }
 }
              
