@@ -52,7 +52,7 @@ int main(){
 
             case 2: cout<<"\n\n\tAgregar programas a un canal"<<endl; 
             if (cabeza == NULL) {
-                cout << "\nNo hay canales registrados" << endl;
+                cout << "\nNo hay canales registrados" << endl;         //Verifica si no hay canales registrados
                 } else {
                 agregaP(cabeza);} break;
 
@@ -93,51 +93,53 @@ int main(){
 void registraC(struct canales *&cabeza){
     
     struct canales *nuevo;
-    nuevo = new(struct canales);
+    nuevo = new(struct canales);         //crea un nuevo espacio en memoria para el canal
 
     cout<<"\nIngrese el nombre del canal: "; cin.ignore(); cin.getline(nuevo->nombre, 30);
-    cout<<"Ingrese el numero del canal: "; cin>>nuevo->num;
+    cout<<"Ingrese el numero del canal: "; cin>>nuevo->num;             //se solicita la informacion del canal
 
     struct canales *temp = cabeza;
 
-    if(cabeza == NULL){
-        cabeza = nuevo;
-        cabeza->sig = cabeza;
-        cabeza->ant = cabeza;
-        cabeza->prog = NULL;
+    if(cabeza == NULL){          //Si no hay ningun nodo en la lista
+        cabeza = nuevo;          //El nuevo canal es la cabeza de la lista
+        cabeza->sig = cabeza;    
+        cabeza->ant = cabeza;    //se asigna a si mismo en sig y ant ya que es una lista circular
+        cabeza->prog = NULL;     //Incializa la lista de programas vacia 
     
-    } else {
+    } else {                      //Si ya hay nodos en la lista
 
         struct canales *verifi = cabeza;
-        do{
+        do{                      //se recorre la lista para verificar que no haya un canal con el mismo numero
 
-            if(verifi->num == nuevo->num){
-                cout<<"\nYa hay un canal registrado con ese numero"<<endl;
-                delete nuevo;
-                return;
+            if(verifi->num == nuevo->num){      //si lo hay
+                cout<<"\nYa hay un canal registrado con ese numero"<<endl;     
+                delete nuevo;       //se libera memoria del nodo que estaba ingresando
+                return;             //se retorna la menu
             }
             verifi = verifi->sig;
 
         }while(verifi != cabeza);
        
-        if(nuevo->num < cabeza->num){
+        if(nuevo->num < cabeza->num){     //si el num del nuevo canal es menor a el de la cabeza de la lista
             
-            nuevo->ant = cabeza->ant;
+            nuevo->ant = cabeza->ant;   
             nuevo->sig = cabeza;                  
-            cabeza->ant->sig = nuevo;   
+            cabeza->ant->sig = nuevo;         //el nuevo canal se vuelve la cabeza de la lista 
             cabeza->ant = nuevo; 
-            cabeza = nuevo;
-            nuevo->prog = NULL;
+            cabeza = nuevo;           
+            nuevo->prog = NULL;       //incializa la lista de programas vacia 
        
-        } else {                             
+        } else {                    //si el numero es mayor
                                     
-            while(temp->sig != cabeza && temp->sig->num < nuevo->num){   
-                temp = temp->sig;
-            }
-
-            nuevo->sig = temp->sig;
+            while(temp->sig != cabeza && temp->sig->num < nuevo->num){  //se va recorriendo la lista y busca canal por canal 
+                temp = temp->sig;           //un canal donde el numero del nuevo canal sea mayor
+                                            //y se ingresa 
+            }                               
+                                    
+                                     
+            nuevo->sig = temp->sig;    
             nuevo->ant = temp;
-            nuevo->prog = NULL;
+            nuevo->prog = NULL;      //la lista de programas está vacia
             temp->sig->ant = nuevo;
             temp->sig = nuevo;
         
@@ -150,7 +152,7 @@ void registraC(struct canales *&cabeza){
 
     cout<<"\n¿Desea agregar un programa al canal?"<<endl;   
                 cout<<"\n1. Si"<<endl;
-                cout<<"2. No"<<endl;                       
+                cout<<"2. No"<<endl;                            //Opcion para agregar programas 
                 cout<<"\nElija una opcion: "; cin>>opc2;
                   if(opc2 == 1){
                      agregaP(cabeza);
@@ -160,83 +162,85 @@ void registraC(struct canales *&cabeza){
 void agregaP(struct canales *&cabeza){
 
     int canalB, opc;
-    bool encontrado = false;
+    bool encontrado = false;    //para la verificacion de existencia
     
     struct canales *temp = cabeza;
 
     cout<<"\nIngrese el numero del canal al cual desea agregar el programa: "; cin>>canalB;
 
-    do{
-        if(temp->num == canalB){
-            encontrado = true;
-            break;
+    do{                                    
+        if(temp->num == canalB){     //recorre la lista de canales
+            encontrado = true;       //se verifica si existe algun canal con el numero ingresado
+            break;                   //si existe, rompe la ejecucion del do-while
         }
-        temp = temp->sig;
+        temp = temp->sig;            
        
     }while(temp!=cabeza);
 
-    if(encontrado == false){
-        cout<<"\nCanal no encontrado"<<endl;
-        return;
+    if(encontrado == false){                     //si no existe 
+        cout<<"\nCanal no encontrado"<<endl;       
+        return;                                  //se retorna al menu
     }
 
 
     do{
 
-    struct programas *nuevop;
-    nuevop = new(struct programas);
+    struct programas *nuevop;            
+    nuevop = new(struct programas);      //crea espacion en memoria para un nuevo programa
 
     cout<<"\nIngrese el nombre del programa: "; cin.ignore(); cin.getline(nuevop->nombre, 30);
     cout<<"Ingrese la clasificacion del programa: "; cin.getline(nuevop->clasificacion, 20);
-    cout<<"\nRecuerde que la duracion de cada programa es de 1 hora";
-    cout<<"\nIngrese la hora de inicio del programa: "; cin>>nuevop->franjah;
+    cout<<"\nRecuerde que la duracion de cada programa es de 1 hora";                       
+    cout<<"\nIngrese la hora de inicio del programa: "; cin>>nuevop->franjah;  //se solicita la informacion
 
     struct programas *verifi = temp->prog;
-    while(verifi != NULL){
-        if(verifi->franjah == nuevop->franjah){
+
+    while(verifi != NULL){                                  //recorre toda la lista
+        if(verifi->franjah == nuevop->franjah){             //busca prog por prog si la hora ingresada ya fue registrada 
             cout<<"\nFranja horaria no disponible"<<endl;
-            delete nuevop;
-            return;
+            delete nuevop;         //si ya fue registrada, se libera el espacio en memoria de este nuevo prog
+            return;               //se retorna al menu
         }
         verifi = verifi->sig;
     }
 
-    if(temp->prog == NULL){
-        temp->prog = nuevop;
-        nuevop->sig = NULL;         //primer nodo
-        nuevop->ant = NULL;     
-    } else {
-        
+    if(temp->prog == NULL){        //Si no hay ningun prog en la lista
+        temp->prog = nuevop;       //se establece la cabeza de la lista de prog en el canal
+        nuevop->sig = NULL;        //Este prog se convierte en la cabeza de la lista
+        nuevop->ant = NULL;        //Se le asigna el NULL a su ant y sig, ya que no es lista circular
+   
+    } else {                        //si ya hay progs en la lista                                 
+                                         
         struct programas *tempP = temp->prog;
     
-        if(nuevop->franjah < tempP->franjah){
-            nuevop->ant = NULL;
-            nuevop->sig = tempP;
-            tempP->ant = nuevop;        //menor que la cabeza
-            temp->prog = nuevop;
+        if(nuevop->franjah < tempP->franjah){ //si la hora del nuevo prog es menor a la de la cabeza de la lista
+            nuevop->ant = NULL;               //ant es NUll porque es la nueva cabeza
+            nuevop->sig = tempP;              //este prog se convierte en la cabeza de la lista
+            tempP->ant = nuevop;       
+            temp->prog = nuevop;             //se cambia la cabeza de la lista de progs en el canal
             
-        } else {
+        } else {    //si la hora del nuevo prog no es menor a la de la cabeza de la lista
 
-        while(tempP->sig != NULL && tempP->sig->franjah < nuevop->franjah){
-            tempP = tempP->sig;
+        while(tempP->sig != NULL && tempP->sig->franjah < nuevop->franjah){ //se recorre toda la lista y busca prog por prog
+            tempP = tempP->sig;   
         }
         
-        if(tempP->sig == NULL){
+        if(tempP->sig == NULL){   //si se recorrio toda la lista, este prog se ingresa en la ultima posc
             tempP->sig = nuevop;
-            nuevop->sig = NULL;                   //ultimo
+            nuevop->sig = NULL;   //como es el ultimo, su sig apunta a NULL
             nuevop->ant = tempP;
-        } else {
+        } else {                              //si no se ha llegado al final de la lista
                 nuevop->sig = tempP->sig;
-                nuevop->ant = tempP;
-                tempP->sig->ant = nuevop;
-                tempP->sig = nuevop;                          //intermedio
+                nuevop->ant = tempP;              //se enlaza en medio de dos programas
+                tempP->sig->ant = nuevop;         //por ende hay que poner cuidado con el ant y el sig
+                tempP->sig = nuevop;                         
         }
    }
 }
     
     cout<<"\n¿Desea agregar mas programas?"<<endl;
     cout<<"\n1. Si"<<endl;                                
-    cout<<"2. No"<<endl;                                    
+    cout<<"2. No"<<endl;                                      //opcion para agregar mas programas
     cout<<"\nElija una opcion: "; cin>>opc;   
 
     }while(opc!=2);    
