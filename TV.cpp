@@ -19,7 +19,7 @@ struct canales{
      struct programas *prog;
 };
 
-struct programas{          
+struct programas{
     int franjah;          
     char nombre[30];       
     char clasificacion[20];
