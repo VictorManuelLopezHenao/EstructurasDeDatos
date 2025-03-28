@@ -471,4 +471,24 @@ void guiacanales(struct canales *cabeza){
         tecla = getch();   //se captura la sig tecla presionada
     }
 }
-             
+
+void muestra(struct canales *cabeza){
+
+    struct canales *temp = cabeza;
+
+    if (cabeza == NULL) {
+        cout << "\nNo hay canales registrados" << endl;         //Verifica si no hay canales registrados
+        return; }
+
+        do{
+
+            cout<<temp->nombre<<endl;
+            cout<<temp->num<<endl;
+
+             )
+
+
+        }while(temp!=cabeza);
+
+
+}
