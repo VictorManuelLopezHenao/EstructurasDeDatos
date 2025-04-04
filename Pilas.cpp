@@ -1,4 +1,4 @@
-#include <iostream>
+#include<iostream>
 using namespace std;
 
 struct nodo {
@@ -6,71 +6,154 @@ struct nodo {
     struct nodo *sig;
 };
 
+void insertar(nodo *&raiz);
+void imprimir(nodo *&raiz);
+void extraer(nodo *&raiz);
+void cantidad(nodo *&raiz);
+void liberar(nodo *&raiz);
+void extraerN(nodo *&raiz);
+void insertarN(nodo *&raiz);
 
-// ______________________________
+int main(){
 
-void insertarN(struct nodo *&raiz){
+    int opc, opc2;
+    struct nodo *raiz = NULL;
 
-    struct nodo *nuevo = new(nodo);
-    cout<<"Ingrese el int: "; cin>>nuevo->info;
+    do{
+    cout<<"\n\tMENÚ PILAS";
+    cout<<"\n1. Insertar nodo"<<endl;
+    cout<<"2. Imprimir pila"<<endl;
+    cout<<"3. Extraer (Sale último nodo en llegar)"<<endl;
+    cout<<"4. Cantidad"<<endl;
+    cout<<"5. Liberar (Vaciar pila)"<<endl;
+    cout<<"6. Salir"<<endl;
+    
+    cout<<"\nIngrese una opción: "; cin>>opc;
+
+    switch(opc){
+        case 1: cout<<"\n\tInsertar nodo"<<endl; 
+        cout<<"\n1. Insertar en la ultima posicion"<<endl;
+        cout<<"2. Insertar en la poscision N"<<endl;
+        cout<<"\nElija una opcion: "; cin>>opc2;
+        if(opc2 == 1){
+            insertar(raiz);
+         }else{
+            insertarN(raiz);
+         } break;
+
+        case 2: cout<<"\n\tImprimir pila"<<endl; imprimir(raiz); break;
+
+        case 3: cout<<"\n\tExtraer nodo"<<endl;
+        cout<<"\n1. Extraer de la ultima posicion"<<endl;
+        cout<<"2. Extraer de la poscision N"<<endl;
+        cout<<"\nElija una opcion: "; cin>>opc2;
+        if(opc2 == 1){
+            extraer(raiz);
+         }else{
+            extraerN(raiz);
+         } break;
+
+        case 4: cout<<"\n\tCantidad de nodos"<<endl; cantidad(raiz); break; 
+
+        case 5: cout<<"\n\tLiberar pila"<<endl; liberar(raiz); break;
+
+        case 6: cout<<"\nHasta luego..."<<endl; break;
+
+        default: cout<<"\nOpcion no valida"<<endl; break;
+    }
+}while(opc!=6);
+
+    return 0;
+}
+
+void insertar(nodo *&raiz){
+
+    struct nodo *nuevo = new(struct nodo);
+    cout<<"\nIngrese un numero: "; cin>>nuevo->info;
 
     if(raiz == NULL){
         raiz = nuevo;
-        raiz->sig = NULL;
-
-    } else{
-       nuevo->sig = raiz;
-       raiz = nuevo;
-      }
+        nuevo->sig = NULL;
+    } else {
+        nuevo->sig = raiz;
+        raiz = nuevo;
+    }
 }
 
-
-void imprimirP(struct nodo *&raiz) {
-
-    if (raiz == NULL) {
-        cout<<"La pila está vacía."<<endl;
+void imprimir(nodo *&raiz){
+    if(raiz == NULL){
+        cout<<"\nLa pila está vacia"<<endl;
         return;
     }
 
-    struct nodo *auxTemp = NULL;
-    
-    // Vaciar la pila original y mover los elementos a la auxiliar
-    while (raiz != NULL) {
-        cout<<raiz->info<<" "; // Mostrar la cabeza
-        struct nodo *temp = raiz; // Guardar la referencia al nodo actual
-        raiz = raiz->sig; // Mover la cabeza al siguiente nodo
-        temp->sig = auxTemp; // Apilar el nodo en la auxiliar
-        auxTemp = temp;
+    struct nodo *aux = NULL;
+
+    cout<<"\nLista de nodos: \n\n";
+    while(raiz != NULL){
+        cout<<raiz->info<<endl;
+        struct nodo *temp = raiz;
+        raiz = raiz->sig;
+
+        temp->sig = aux;
+        aux = temp;
     }
 
-    cout<<endl;
-
-    // Restaurar la pila original desde la auxiliar
-    while (auxTemp != NULL) {
-        struct nodo *temp = auxTemp;
-        auxTemp = auxTemp->sig;
+    while(aux != NULL){
+        struct nodo *temp = aux;
+        aux = aux->sig;
         temp->sig = raiz;
         raiz = temp;
     }
 }
 
-
-
-int extraer(struct nodo *&raiz) {              // Extraer el nodo superior de la pila (pop)
-    if (raiz == NULL) {
-        cout<<"La pila está vacía."<<endl;
-        return -1;
+void extraer(nodo *&raiz){
+    if(raiz == NULL){
+        cout<<"\nLa pila está vacia"<<endl;
+        return;
     }
-    
+
     int informacion = raiz->info;
-    struct nodo *bor = raiz;
+    struct nodo *elim = raiz;
     raiz = raiz->sig;
-    delete bor;  // Liberar memoria correctamente
-    return informacion;
+    delete elim;
+    
+    cout<<"\nDato extraido: "<<informacion<<endl;
 }
 
+void cantidad(nodo *&raiz){
+    if(raiz == NULL){
+        cout<<"\nLa pila está vacia"<<endl;
+        return;
+    }
 
-void liberar(struct nodo *&raiz) {                                  // Liberar toda la pila
+    int count = 0;
+    struct nodo *aux = NULL;
+
+    while(raiz != NULL){
+        count++;
+        struct nodo *temp = raiz;
+        raiz = raiz->sig;
+        temp->sig = aux;
+        aux = temp;
+    }
+
+    while(aux != NULL){
+        struct nodo *temp = aux;
+        aux = aux->sig;
+        temp->sig = raiz;
+        raiz = temp;
+    }
+
+    cout<<count<<endl;             //manejar la funcion con int
+
+}
+
+void liberar(nodo *&raiz){
+    if (raiz == NULL) {
+        cout<<"La pila ya está vacía."<<endl;
+        return;
+    }
+
     struct nodo *reco = raiz;
     struct nodo *bor;
 
@@ -82,90 +165,16 @@ void liberar(struct nodo *&raiz) {                                  // Liberar t
     while (reco != NULL) {
         bor = reco;
         reco = reco->sig;
-        delete bor;  // Liberar memoria correctamente
+        delete bor;  
     }
     raiz = NULL;
     cout<<"Pila liberada." <<endl;
 }
 
+void extraerN(nodo *&raiz){
 
-int cantidad(struct nodo *&raiz) { // Contar los nodos de la pila respetando la lógica de pilas
-    if (raiz == NULL) {
-        return 0;
-    }
-
-    struct nodo *auxTemp = NULL;
-    int contador = 0;
-
-    // Pasar nodos a la pila auxiliar mientras contamos
-    while (raiz != NULL) {
-        contador++;
-        struct nodo *temp = raiz;
-        raiz = raiz->sig;
-        temp->sig = auxTemp;
-        auxTemp = temp;
-    }
-
-    // Restaurar la pila original desde la auxiliar
-    while (auxTemp != NULL) {
-        struct nodo *temp = auxTemp;
-        auxTemp = auxTemp->sig;
-        temp->sig = raiz;
-        raiz = temp;
-    }
-
-    return contador;
 }
 
+void insertarN(nodo *&raiz){
 
-int main(){
-
-    int opc;
-    struct nodo *raiz = NULL;
-
-    do{
-    cout<<"MENÚ PILAS";
-    cout<<"\n1. Insertar nodo"<<endl;
-    cout<<"2. Imprimir pila"<<endl;
-    cout<<"3. Extraer (Sale último nodo en llegar)"<<endl;
-    cout<<"4. Cantidad"<<endl;
-    cout<<"5. Liberar (Vaciar pila)"<<endl;
-    cout<<"6. Salir"<<endl;
-    
-    cout<<"\nIngrese una opción: "; cin>>opc;
-
-     switch(opc){
-
-    case 1:
-        insertarN(raiz);
-        break;
-
-    case 2:
-        imprimirP(raiz);
-        break;
-
-    case 3:
-        cout<<"Elemento extraído: "<<extraer(raiz)<<endl;
-        break;
-
-    case 4:
-        cout<<"Cantidad de nodos en la pila: "<<cantidad(raiz)<<endl;
-        break;
-
-    case 5:
-        liberar(raiz);
-        break;
-
-    case 6:
-        liberar(raiz);
-        cout<<"\nHasta luego.\n";
-        system("pause");
-        return 0;
-
-    default:
-        cout<<"Opción no válida.\n";
-        break;
-
-    }
-   }while(opc!=6);
-  }
+}
