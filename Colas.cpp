@@ -196,6 +196,7 @@ void insertarN(nodo *&raiz, nodo *&fondo) {
         // Guardar nodo actual
         nodo *temp = raiz;
         raiz = raiz->sig;
+
         temp->sig = NULL;
 
         // Enlazar el nodo actual en la nueva cola
@@ -207,7 +208,7 @@ void insertarN(nodo *&raiz, nodo *&fondo) {
             auxF = temp;
         }
 
-        
+
         count++;
     }
 
@@ -215,10 +216,44 @@ void insertarN(nodo *&raiz, nodo *&fondo) {
     fondo = auxF;
 }
 
-
-
 void extraerN(nodo *&raiz, nodo *&fondo){
+    
+    int posc;
+    cout<<"\nIngrese la posicion donde desea extraer el nodo: "; cin>>posc;
 
+    if(posc > cantidad(raiz, fondo) || posc <= 0){
+        cout<<"\nPosicion no disponible"<<endl;
+        return;
+    }
+
+    nodo *auxR = NULL;
+    nodo *auxF = NULL;
+
+    int count = 1;
+
+    while(raiz != NULL){
+        nodo *temp = raiz;
+        raiz = raiz->sig;
+        temp->sig = NULL;
+        
+        if(posc == count){
+            nodo *elim = temp;
+            cout<<"\nInformacion del nodo eliminado: "<<elim->info<<endl;
+            delete elim;
+        } else {
+            if(auxR == NULL){
+                auxR = temp;
+                auxF = temp;
+            } else {
+                auxF->sig = temp;
+                auxF = temp;
+            }
+        }
+        count++;
+    }
+
+    raiz = auxR;
+    fondo = auxF;
 }
 
 int cantidad(nodo *&raiz, nodo *&fondo){
