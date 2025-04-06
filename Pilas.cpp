@@ -108,7 +108,7 @@ void imprimir(nodo *&raiz){
 
     struct nodo *aux = NULL;
 
-    cout<<"\nInformacion de nodos: \n\n";
+    cout<<"\nInformacion de los nodos: \n";
     while(raiz != NULL){
         cout<<raiz->info<<endl;
         struct nodo *temp = raiz;
@@ -183,7 +183,7 @@ void insertarN(nodo *&raiz){
         return;
     }
 
-    if(posc != 1 && posc > cantidad(raiz) || posc <= 0){
+    if(posc > cantidad(raiz) || posc <= 0){
         cout<<"\nPosicion no disponible"<<endl;
         return;
     }
@@ -192,19 +192,16 @@ void insertarN(nodo *&raiz){
 
     if(posc == 1){                          //1 posicion
         if(raiz == NULL){
-            insertar(raiz);
-            return;
+            insertar(raiz); 
+            return;       
        
-        } else {
-
+        } 
             while(raiz != NULL){
-            struct nodo *temp = raiz;
+            struct nodo *temp = raiz;         // si hay
             raiz = raiz->sig;
             temp->sig = aux;
             aux = temp;
            }
-   
-    }
       } else {                //posicion x
 
         while(posc -1 != cantidad(raiz)){
