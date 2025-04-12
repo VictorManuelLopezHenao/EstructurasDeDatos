@@ -49,6 +49,7 @@
         "typeinfo": "cpp",
         "compra-venta vehiculos punteros": "cpp",
         "listas simples": "cpp",
-        "juegoronda-listasdobles": "cpp"
+        "juegoronda-listasdobles": "cpp",
+        "ctime": "cpp"
     }
 }
