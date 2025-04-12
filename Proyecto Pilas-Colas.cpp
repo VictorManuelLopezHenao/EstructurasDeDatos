@@ -12,7 +12,7 @@ struct datos{
 };
 
 void registrar(datos *&raiz, datos *&fondo, int edad);
-void elimPersonaCola(datos *&raiz, datos *&fondo, int edad);
+void elimPersonaCola(datos *&raiz, datos *&fondo);
 void sgteTurno(datos *&raiz, datos *&fondo, datos *&raizP);
 void ListadoAtendidasPila(datos *&raizP);
 void guardardatos(datos *&raizP);
@@ -25,6 +25,7 @@ int main(){
     int count1 = 0;
     int count2 = 0;
     int count3 = 0;
+    bool salir = false;
 
     datos *raiz = NULL; datos *fondo = NULL;
     datos *raiz1 = NULL; datos *fondo1 = NULL; 
@@ -64,7 +65,6 @@ int main(){
             
             case 2: cout<<"\n\tTurno siguiente"<<endl; 
             
-            while(true){
             if(raiz1 != NULL && count1 < 3){
                 sgteTurno(raiz1, fondo1, raizP);
                 count1++;
@@ -82,11 +82,12 @@ int main(){
                 if(raiz1 == NULL && raiz2 == NULL && raiz3 == NULL){
                     cout<<"\nNo hay pacientes registrados"<<endl;
                     break;
-                } else {
-                    count1 = count2 = count3 = 0;
                 }
+                
+                    count1 = count2 = count3 = 0;
+                
             }
-         } break;
+          break;
 
             
          case 3: cout<<"\n\tEliminar persona de la cola"<<endl; 
@@ -99,13 +100,13 @@ int main(){
             cout<<"\nIngrese su edad: "; cin>>edad;
             
             if(edad > 55){
-                elimPersonaCola(raiz1, fondo1, edad);
+                elimPersonaCola(raiz1, fondo1);
 
             } else if(edad <= 55 && edad > 40){
-                elimPersonaCola(raiz2, fondo2, edad);
+                elimPersonaCola(raiz2, fondo2);
 
             } else if(edad <= 40 && edad > 0){
-                elimPersonaCola(raiz3, fondo3, edad);
+                elimPersonaCola(raiz3, fondo3);
 
             } else {
                 cout<<"\nEdad no valida"<<endl;
@@ -121,7 +122,7 @@ int main(){
              } break;
 
 
-            case 5: cout<<"\nPrograma cerrado. Vuelve pronto..."<<endl; 
+            case 5: 
             if(raiz1 != NULL || raiz2 != NULL || raiz3 != NULL){
                 cout<<"\nEl programa no se puede cerrar ya que no se ha atentido a todas las personas"<<endl;                
             } else {
@@ -134,13 +135,13 @@ int main(){
                 liberarmemoria(raizP);
 
                 cout<<"\nPrograma cerrado. Vuelve pronto..."<<endl;
-                opc = 6;
+                salir = true;
             }break;
 
             default: cout<<"\nOpcion no valida"<<endl; break;
         }
 
-    }while(opc!=6);
+    }while(salir!=true);
 
     return 0;
 }
@@ -156,11 +157,32 @@ void registrar(datos *&raiz, datos *&fondo, int edad){
     cout<<"N° de identificacion: "; cin>>nuevo->id; 
     cout<<"N° de telefono: "; cin>>nuevo->tel;
     nuevo->edad = edad;
-    
-    nuevo->fechaservicio = fecha();
 
-//verificacion de si hay alguien igual id
-    //fecha
+    datos *auxR = NULL;
+    datos *auxF = NULL;
+
+    while(raiz != NULL){
+        datos *temp = raiz;
+        raiz = raiz->sig;
+
+        if(temp->id == nuevo->id){
+            cout<<"\nLa persona con ID: "<<nuevo->id<<" ya solicitó un turno"<<endl;
+            delete nuevo;
+            return;
+        } else {
+            if(auxR == NULL){
+                auxR = temp;
+                auxF = temp;
+            } else {
+                auxF->sig = temp;
+                auxF = temp;
+            }
+        }
+    }
+
+    raiz = auxR;
+    fondo = auxF;
+
     nuevo->sig = NULL;
 
         if(raiz == NULL){
@@ -190,7 +212,7 @@ void sgteTurno(datos *&raiz, datos *&fondo, datos *&raizP){
     }
 }
 
-void elimPersonaCola(datos *&raiz, datos *&fondo, int edad){
+void elimPersonaCola(datos *&raiz, datos *&fondo){
    
     int idB;
     cout<<"\nIngrese la identificacion de la persona a eliminar: "; cin>>idB;
@@ -221,12 +243,12 @@ void elimPersonaCola(datos *&raiz, datos *&fondo, int edad){
         }
       
     }
+    raiz = auxR;
+    fondo = auxF;
+    
     if(!encontrado){
         cout<<"\nNo se encontró la persona con ID: "<<idB<<endl;
     }
-
-    raiz = auxR;
-    fondo = auxF;
 }
 
 void ListadoAtendidasPila(datos *&raizP){
@@ -237,13 +259,11 @@ void ListadoAtendidasPila(datos *&raizP){
     
     while(raizP != NULL){
        
-        cout<<endl;
         cout<<raizP->nombres<<" "<<raizP->apellidos<<endl;
-        cout<<"Id: "<<raizP->id;
+        cout<<"Id: "<<raizP->id<<endl<<endl;
 
         datos *temp = raizP;
         raizP = raizP->sig;
-
         temp->sig = aux;
         aux = temp;
     }
@@ -285,11 +305,11 @@ void liberarmemoria(datos *&raiz){
     }
 }
 
-string fecha(){
+/*string fecha(){
     time_t t = time(nullptr);
     tm* ahora = localtime(&t);
 
     return to_string(ahora->tm_mday) + "/" +
            to_string(ahora->tm_mon + 1) + "/" +
            to_string(ahora->tm_year + 1900);
-}
+}*/
