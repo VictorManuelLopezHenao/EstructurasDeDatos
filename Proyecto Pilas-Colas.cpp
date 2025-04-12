@@ -7,7 +7,7 @@ using namespace std;
 struct datos{
     int id, tel, edad;
     char nombres[30], apellidos[30], sexo[10];
-    string fechaservicio;
+    //string fechaservicio[11];
     datos *sig;
 };
 
@@ -183,7 +183,7 @@ void registrar(datos *&raiz, datos *&fondo, int edad){
     raiz = auxR;
     fondo = auxF;
 
-    nuevo->sig = NULL;
+        nuevo->sig = NULL;
 
         if(raiz == NULL){
             raiz = nuevo;
@@ -195,7 +195,7 @@ void registrar(datos *&raiz, datos *&fondo, int edad){
 
 }
 
-void sgteTurno(datos *&raiz, datos *&fondo, datos *&raizP){
+void sgteTurno(datos *&raiz, datos *&fondo, datos *&raizP){  //problemas
     
     cout<<"\nSiguiente turno:\n"<<endl;
     cout<<raiz->nombres<<" "<<raiz->apellidos<<endl;
@@ -305,11 +305,11 @@ void liberarmemoria(datos *&raiz){
     }
 }
 
-/*string fecha(){
-    time_t t = time(nullptr);
-    tm* ahora = localtime(&t);
 
-    return to_string(ahora->tm_mday) + "/" +
-           to_string(ahora->tm_mon + 1) + "/" +
-           to_string(ahora->tm_year + 1900);
-}*/
+
+
+   
+
+    
+
+
