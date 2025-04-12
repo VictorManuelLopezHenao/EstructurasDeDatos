@@ -85,7 +85,6 @@ int main(){
                 }
                 
                     count1 = count2 = count3 = 0;
-                
             }
           break;
 
@@ -144,9 +143,10 @@ int main(){
     }while(salir!=true);
 
     return 0;
+
 }
 
-void registrar(datos *&raiz, datos *&fondo, int edad){
+void registrar(datos *&raiz, datos *&fondo, int edad){ //falta lo de la fecha
 
     datos *nuevo = new(struct datos);
 
@@ -168,7 +168,6 @@ void registrar(datos *&raiz, datos *&fondo, int edad){
         if(temp->id == nuevo->id){
             cout<<"\nLa persona con ID: "<<nuevo->id<<" ya solicitó un turno"<<endl;
             delete nuevo;
-            return;
         } else {
             if(auxR == NULL){
                 auxR = temp;
