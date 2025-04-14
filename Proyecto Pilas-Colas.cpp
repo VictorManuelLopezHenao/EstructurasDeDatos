@@ -1,6 +1,7 @@
 #include<iostream>
 #include<fstream>
 #include<ctime>
+#include<cstring>
 using namespace std;
 
 struct datos{
@@ -16,7 +17,7 @@ void sgteTurno(datos *&raiz, datos *&fondo, datos *&raizP);
 void ListadoAtendidasPila(datos *&raizP);
 void guardardatos(datos *&raizP);
 void liberarmemoria(datos *&raiz);
-void Fecha(char* destino);
+void obtenerFecha(char* destino);
 
 
 int main(){
@@ -67,28 +68,28 @@ int main(){
             case 2: 
     cout << "\n\tTurno siguiente" << endl;
 
-    // Prioridad 1: Mayores de 55 años
+    
     if (raiz1 != NULL && count1 < 3) {
         sgteTurno(raiz1, fondo1, raizP);
         count1++;
     } 
-    // Prioridad 2: Entre 40 y 55 años
+
     else if (raiz2 != NULL && count2 < 2) {
         sgteTurno(raiz2, fondo2, raizP);
         count2++;
     } 
-    // Prioridad 3: Menores de 40 años
+    
     else if (raiz3 != NULL && count3 < 1) {
         sgteTurno(raiz3, fondo3, raizP);
         count3++;
     } 
-    // Si todas las prioridades han alcanzado su límite
+    
     else {
-        // Verificar si aún hay personas en las colas
+        
         if (raiz1 == NULL && raiz2 == NULL && raiz3 == NULL) {
             cout << "\nNo hay pacientes registrados" << endl;
         } else {
-            // Reiniciar los contadores para volver a atender las prioridades
+            
             count1 = count2 = count3 = 0;
         }
     }
@@ -151,7 +152,7 @@ int main(){
 
 }
 
-void registrar(datos *&raiz, datos *&fondo, int edad){ //falta lo de la fecha
+void registrar(datos *&raiz, datos *&fondo, int edad){ 
 
     datos *nuevo = new(struct datos);
 
@@ -163,8 +164,8 @@ void registrar(datos *&raiz, datos *&fondo, int edad){ //falta lo de la fecha
     cout<<"N° de telefono: "; cin>>nuevo->tel;
     nuevo->edad = edad;
 
-    Fecha(nuevo->fechaservicio);
-
+    obtenerFecha(nuevo->fechaservicio);
+    
     datos *auxR = NULL;
     datos *auxF = NULL;
     bool duplicado = false;
@@ -290,24 +291,26 @@ void ListadoAtendidasPila(datos *&raizP){
     }
 }
 
-void guardardatos(datos *&raizP){
-   
+void guardardatos(datos *&raizP) {
     ofstream archivo("PersonasAtendidas.bin", ios::binary | ios::app);
 
-    if(!archivo.is_open()) {
-        cout<<"\nError al intentar abrir el archivo"<<endl;
+    if (!archivo.is_open()) {
+        cout << "\nError al intentar abrir el archivo." << endl;
         return;
     }
 
-    while(raizP != NULL){
+    while (raizP != NULL) {
+        datos persona; 
+        // Copiar campo por campo
+        persona.id = raizP->id;
+        persona.tel = raizP->tel;
+        persona.edad = raizP->edad;
+        strcpy(persona.nombres, raizP->nombres);
+        strcpy(persona.apellidos, raizP->apellidos);
+        strcpy(persona.sexo, raizP->sexo);
+        strcpy(persona.fechaservicio, raizP->fechaservicio);
 
-        archivo.write(reinterpret_cast<const char*>(&raizP->id), sizeof(raizP->id));
-        archivo.write(reinterpret_cast<const char*>(&raizP->tel), sizeof(raizP->tel));
-        archivo.write(reinterpret_cast<const char*>(&raizP->edad), sizeof(raizP->edad));
-        archivo.write(reinterpret_cast<const char*>(raizP->nombres), sizeof(raizP->nombres));
-        archivo.write(reinterpret_cast<const char*>(raizP->apellidos), sizeof(raizP->apellidos));
-        archivo.write(reinterpret_cast<const char*>(raizP->sexo), sizeof(raizP->sexo));
-        archivo.write(reinterpret_cast<const char*>(raizP->fechaservicio), sizeof(raizP->fechaservicio));
+        archivo.write(reinterpret_cast<const char*>(&persona), sizeof(persona));
 
         datos *temp = raizP;
         raizP = raizP->sig;
@@ -325,12 +328,11 @@ void liberarmemoria(datos *&raiz){
     }
 }
 
-void Fecha(char* destino) {
+void obtenerFecha(char* destino) {
     time_t t = time(NULL);
     struct tm *tm_info = localtime(&t);
-    strftime(destino, 11, "%d/%m/%Y", tm_info); // Guarda solo la fecha
+    strftime(destino, 11, "%d/%m/%Y", tm_info);
 }
 
-    
 
 
