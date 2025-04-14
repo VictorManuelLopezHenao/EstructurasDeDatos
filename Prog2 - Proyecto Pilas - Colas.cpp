@@ -6,6 +6,7 @@ struct datos {
     int id, tel, edad;
     char nombres[30], apellidos[30], sexo[10];
     char fechaservicio[11];
+    datos *sig;
 };
 
 void listado();

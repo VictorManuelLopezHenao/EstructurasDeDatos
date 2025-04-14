@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctime>
 
 using namespace std;
  
@@ -245,4 +246,9 @@ void muestracontenido(struct nodo *primero, int count){
         temp = temp->sig;
     }
 }
-}
+
+const char* fecha(){          
+    time_t t;
+    time(&t);
+    return ctime(&t);  
+  }
