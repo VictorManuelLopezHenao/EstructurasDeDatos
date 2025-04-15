@@ -29,7 +29,7 @@ int main(){
     int count3 = 0;
     bool salir = false;
 
-    datos *raiz = NULL; datos *fondo = NULL;
+    
     datos *raiz1 = NULL; datos *fondo1 = NULL; 
     datos *raiz2 = NULL; datos *fondo2 = NULL; 
     datos *raiz3 = NULL; datos *fondo3 = NULL; 
