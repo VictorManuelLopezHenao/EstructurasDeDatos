@@ -84,15 +84,14 @@ int main(){
         count3++;
     } 
     
-    else {
-        
-        if (raiz1 == NULL && raiz2 == NULL && raiz3 == NULL) {
+    else if (raiz1 == NULL && raiz2 == NULL && raiz3 == NULL) {
             cout << "\nNo hay pacientes registrados" << endl;
-        } else {
-            
+        }
+    
+    else{ 
             count1 = count2 = count3 = 0;
         }
-    }
+    
     break;
                       
          case 3: cout<<"\n\tEliminar persona de la cola"<<endl; 
@@ -189,21 +188,21 @@ void registrar(datos *&raiz, datos *&fondo, int edad){
         }
     }
 
-    if (duplicado) {
-        cout << "\nError: La persona con ID " << nuevo->id << " ya solicitó un turno." << endl;
-        delete nuevo; // Liberar memoria del nodo creado
-        return;
-    }
-
     raiz = auxR;
     fondo = auxF;
+
+    if (duplicado) {
+        cout << "\nError: La persona con ID " << nuevo->id << " ya solicitó un turno." << endl;
+        delete nuevo; 
+        return;
+    }
 
         nuevo->sig = NULL;
 
         if(raiz == NULL){
             raiz = nuevo;
             fondo = nuevo;
-        } else {
+        } else { 
             fondo->sig = nuevo;
             fondo = nuevo;
         }
