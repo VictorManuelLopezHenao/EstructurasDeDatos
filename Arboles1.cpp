@@ -1,5 +1,5 @@
 #include<iostream>
-#include<windows.h>
+#include <iomanip>
 
 using namespace std;
 
@@ -11,7 +11,8 @@ struct arbol{
 
 void agregar(arbol *&raiz, int n);
 void Muestra_InOrden(arbol *&raiz);
-void dibujarArbol(arbol* raiz, int x, int y, int separacion);
+void dibujarArbol(arbol *raiz);
+
 
 int main(){
 
@@ -39,10 +40,10 @@ int main(){
                 Muestra_InOrden(raiz);
             break;
 
-            case 3: 
-            system("cls");
-            dibujarArbol(raiz, 40, 2, 20);
-            cout << "\n\n";
+            case 3: cout << "\n\tDibujar el árbol\n";
+                dibujarArbol(raiz);
+            break;
+           
             break;
 
             case 4: cout<<"\nSaliendo del programa...\n"; break;
@@ -110,30 +111,38 @@ void Muestra_InOrden(arbol *&raiz){
     }
 }
 
-void gotoxy(int x, int y) {
-    COORD coord;
-    coord.X = x;
-    coord.Y = y;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
-
-// Dibujo recursivo del árbol
-void dibujarArbol(arbol* raiz, int x, int y, int separacion) {
-    if (raiz == NULL) return;
-
-    gotoxy(x, y);
-    cout << raiz->info;
-
-    // Dibuja líneas visuales (opcional)
-    if (raiz->izq != NULL) {
-        gotoxy(x - separacion / 2, y + 1);
-        cout << "/";
-        dibujarArbol(raiz->izq, x - separacion, y + 2, separacion / 2);
+void dibujarArbol(arbol *raiz) {
+    if (raiz == NULL) {
+        cout << "El árbol está vacío." << endl;
+        return;
     }
 
-    if (raiz->der != NULL) {
-        gotoxy(x + separacion / 2, y + 1);
-        cout << "\\";
-        dibujarArbol(raiz->der, x + separacion, y + 2, separacion / 2);
+    // Función auxiliar para calcular la altura del árbol
+    auto altura = [](arbol* n, auto&& altura) -> int {
+        if (n == NULL) return 0;
+        return 1 + max(altura(n->izq, altura), altura(n->der, altura));
+    };
+
+    // Función recursiva para imprimir el árbol
+    auto imprimirNivel = [](arbol* nodo, int nivel, int espaciado, auto&& imprimirNivel) {
+        if (nodo == NULL) {
+            cout << setw(espaciado) << " ";
+            return;
+        }
+        if (nivel == 1) {
+            cout << setw(espaciado) << nodo->info;
+        } else if (nivel > 1) {
+            imprimirNivel(nodo->izq, nivel - 1, espaciado, imprimirNivel);
+            cout << setw(espaciado) << " ";
+            imprimirNivel(nodo->der, nivel - 1, espaciado, imprimirNivel);
+        }
+    };
+
+    int h = altura(raiz, altura);
+    int espaciado = 4; // Ajusta este valor para cambiar el espaciado entre nodos
+
+    for (int i = 1; i <= h; i++) {
+        imprimirNivel(raiz, i, espaciado * (h - i + 1), imprimirNivel);
+        cout << endl << endl;
     }
 }
