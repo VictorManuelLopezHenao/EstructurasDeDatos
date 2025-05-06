@@ -16,7 +16,10 @@ void insertar(arbol *&raiz, arbol *nuevo);
 void modificar(arbol *&raiz, const string &palabra);
 void mostrar_elem_palabra(arbol *raiz, const string &palabra);
 void listado_categoria(arbol *raiz, const string &categoria);
+void listado_letra(arbol *raiz, char letra);
 void listado_general(arbol *raiz);
+void primer_palabra(arbol *raiz);
+void ultima_palabra(arbol *raiz);
 int contador(arbol *raiz);
 
 int main(){
@@ -41,34 +44,64 @@ int main(){
 
             case 2: cout<<"\n\tModificar elementos de una palabra\n";
                     
-                    cout <<"\nIngrese la palabra que desea modificar: ";
-                    cin.ignore(); getline(cin, buscar);  
-                    modificar(raiz, buscar);  
-                    break;
+                    if(raiz == NULL){
+                         cout<<"\nNo hay palabras registradas en el diccionario\n";
+                    } else {
+                        cout <<"\nIngrese la palabra que desea modificar: ";
+                        cin.ignore(); getline(cin, buscar);  
+                        modificar(raiz, buscar);  
+                    } break;
 
             case 3: cout<<"\n\tMostrar elementos de una palabra\n"; 
                     
-                    cout <<"\nIngrese la palabra que desea buscar: ";
-                    cin.ignore(); getline(cin, buscar);  
-                    mostrar_elem_palabra(raiz, buscar); 
-                    break;
+                    if(raiz == NULL){
+                        cout<<"\nNo hay palabras registradas en el diccionario\n";
+                    } else {
+                        cout <<"\nIngrese la palabra que desea buscar: ";
+                        cin.ignore(); getline(cin, buscar);  
+                         mostrar_elem_palabra(raiz, buscar); 
+                    } break;
 
             case 4: cout<<"\n\tEliminar palabra\n"; break;
 
             case 5: cout<<"\n\tListado de palabras por categoría gramatical\n";
-                    
-                    cout<<"\nIngrese la categoría gramatical (verbo, sustantivo, adjetivo): ";
-                    cin.ignore(); getline(cin, buscar);
-                    listado_categoria(raiz, buscar);
-                    break;
+            
+                    if(raiz == NULL){
+                        cout<<"\nNo hay palabras registradas en el diccionario\n";
+                    } else {
+                        cout<<"\nIngrese la categoría gramatical (verbo, sustantivo, adjetivo): ";
+                        cin.ignore(); getline(cin, buscar);
+                        listado_categoria(raiz, buscar);
+                    } break;
 
-            case 6: cout<<"\n\tListado de palabras por letra\n"; break;
+            case 6: cout<<"\n\tListado de palabras por letra\n"; 
+                
+                    if(raiz == NULL){
+                         cout<<"\nNo hay palabras registradas en el diccionario\n";
+                    } else {
+                        char letra;
+                        cout<<"\nIngrese la letra por la que desea listar las palabras: "; cin>>letra;
+                        listado_letra(raiz, letra);
+                    } break;
+                
 
             case 7: cout<<"\n\tListado general de palabras en orden alfabético\n"; 
-                    listado_general(raiz); 
-                    break;
+                    
+                    if(raiz == NULL){
+                     cout<<"\nNo hay palabras registradas en el diccionario\n";
+                     } else {
+                        listado_general(raiz); 
+                     } break;
 
-            case 8: cout<<"\n\tMostrar primera y última palabra del diccionario con sus componentes\n"; break;
+            case 8: cout<<"\n\tMostrar primera y última palabra del diccionario con sus componentes\n";
+                    
+                    if(raiz == NULL){
+                        cout<<"\nNo hay palabras registradas en el diccionario\n";
+                    } else {
+                    primer_palabra(raiz);
+                    ultima_palabra(raiz);
+                }
+                    break;
 
             case 9: cout<<"\n\tCantidad de palabras registradas en el diccionario\n"; 
                     cout<<"\nLa cantidad de palabras registradas es: "<<contador(raiz);
@@ -242,7 +275,26 @@ void listado_categoria(arbol *raiz, const string &categoria){
     }
 }
 
-void listado_letra(){
+void listado_letra(arbol *raiz, char letra){
+
+    if(raiz != NULL){
+        
+        listado_letra(raiz->izq, letra);
+
+        if(letra == raiz->palabra[0]){
+        cout<<"\nPalabra: "<<raiz->palabra;
+        cout<<"\nSignificado: "<<raiz->significado;
+        cout<<"\nCategoria: "<<raiz->categoria;
+        cout<<"\nSinonimos: ";
+
+        for(int i=0; i < raiz->sinonimo.size(); i++){
+            cout<<"\n"<<raiz->sinonimo[i];
+         }
+        cout<<"\n\n-----------------------------------------";
+        }
+
+        listado_letra(raiz->der, letra);
+    }
 
 }
 
@@ -267,8 +319,41 @@ void listado_general(arbol *raiz){
     }
 }
 
-void primera_ultima_palabra(){
+void primer_palabra(arbol *raiz){
 
+    while(raiz->izq!=NULL){
+        raiz = raiz->izq;
+    }
+
+        cout<<"\nPrimer palabra del diccionario:\n";
+
+        cout<<"\nPalabra: "<<raiz->palabra;
+        cout<<"\nSignificado: "<<raiz->significado;
+        cout<<"\nCategoria: "<<raiz->categoria;
+        cout<<"\nSinonimos: ";
+
+        for(int i=0; i < raiz->sinonimo.size(); i++){
+            cout<<"\n"<<raiz->sinonimo[i];
+         }
+        cout<<"\n";
+}
+
+void ultima_palabra(arbol *raiz){
+    
+    while(raiz->der!=NULL){
+        raiz = raiz->der;
+    }
+
+        cout<<"\nUltima palabra del diccionario:\n";
+        cout<<"\nPalabra: "<<raiz->palabra;
+        cout<<"\nSignificado: "<<raiz->significado;
+        cout<<"\nCategoria: "<<raiz->categoria;
+        cout<<"\nSinonimos: ";
+
+        for(int i=0; i < raiz->sinonimo.size(); i++){
+            cout<<"\n"<<raiz->sinonimo[i];
+         }
+        cout<<"\n";
 }
 
 int contador(arbol *raiz){
