@@ -115,8 +115,8 @@ int main(){
 
     return 0;
 }
-
-
+//coments
+ds
 arbol *info(){
     arbol *nuevo = new arbol;
     nuevo->izq = NULL;
