@@ -15,12 +15,14 @@ arbol *info();
 void insertar(arbol *&raiz, arbol *nuevo);
 void modificar(arbol *&raiz, const string &palabra);
 void mostrar_elem_palabra(arbol *raiz, const string &palabra);
+void eliminar(arbol *&raiz, const string &palabra);
 void listado_categoria(arbol *raiz, const string &categoria);
 void listado_letra(arbol *raiz, char letra);
 void listado_general(arbol *raiz);
 void primer_palabra(arbol *raiz);
 void ultima_palabra(arbol *raiz);
 int contador(arbol *raiz);
+
 
 int main(){
 
@@ -62,7 +64,17 @@ int main(){
                          mostrar_elem_palabra(raiz, buscar); 
                     } break;
 
-            case 4: cout<<"\n\tEliminar palabra\n"; break;
+            case 4: 
+                    cout << "\n\tEliminar palabra\n";
+                    if (raiz == NULL) {
+                        cout << "\nNo hay palabras registradas en el diccionario.\n";
+                    } else {
+                        cout << "\nIngrese la palabra que desea eliminar: ";
+                        cin.ignore(); 
+                        getline(cin, buscar); 
+                        eliminar(raiz, buscar); 
+                    }
+                    break;
 
             case 5: cout<<"\n\tListado de palabras por categoría gramatical\n";
             
@@ -115,8 +127,7 @@ int main(){
 
     return 0;
 }
-//coments
-ds
+
 arbol *info(){
     arbol *nuevo = new arbol;
     nuevo->izq = NULL;
@@ -251,8 +262,56 @@ void mostrar_elem_palabra(arbol *raiz, const string &palabra){
     
 }
 
-void eliminar(){
+void eliminar(arbol *&raiz, const string &palabra) {
+    if (raiz == NULL) {
+        cout << "\nLa palabra no se encuentra en el diccionario.\n";
+        return;
+    }
 
+    if (palabra < raiz->palabra) {
+        eliminar(raiz->izq, palabra); // Buscar a la izq
+    } else if (palabra > raiz->palabra) {
+        eliminar(raiz->der, palabra); // Buscar a la derecha
+    } else {
+       
+        // Caso 1: El nodo no tiene hijos
+        if (raiz->izq == NULL && raiz->der == NULL) {
+            delete raiz;
+            raiz = NULL;
+            cout << "\nLa palabra ha sido eliminada correctamente.\n";
+        }
+       
+        // Caso 2: El nodo tiene un solo hijo 
+        else if (raiz->izq == NULL) {
+            arbol *temp = raiz;
+            raiz = raiz->der;
+            delete temp;
+            cout << "\nLa palabra ha sido eliminada correctamente.\n";
+
+        } else if (raiz->der == NULL) {
+            arbol *temp = raiz;
+            raiz = raiz->izq;
+            delete temp;
+            cout << "\nLa palabra ha sido eliminada correctamente.\n";
+        }
+       
+        // Caso 3: El nodo tiene dos hijos
+        else {
+            arbol *temp = raiz->der;
+            // Encontrar el sucesor inorden (el nodo más pequeño del subárbol derecho)
+            while (temp->izq != NULL) {
+                temp = temp->izq;
+            }
+           
+            // Reemplazar el valor del nodo actual con el sucesor inorden
+            raiz->palabra = temp->palabra;
+            raiz->significado = temp->significado;
+            raiz->categoria = temp->categoria;
+            raiz->sinonimo = temp->sinonimo;
+            // Eliminar el sucesor inorden
+            eliminar(raiz->der, temp->palabra);
+        }
+    }
 }
 
 void listado_categoria(arbol *raiz, const string &categoria){
