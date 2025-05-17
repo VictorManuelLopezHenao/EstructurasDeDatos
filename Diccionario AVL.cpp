@@ -129,7 +129,7 @@ int main(){
                     
             case 10: 
             cout << "\n\tVisualización del árbol AVL\n\n\n";
-            if (raiz == nullptr) {
+            if (raiz == NULL) {
                 cout << "\nNo hay palabras registradas en el diccionario\n";
             } else {
                 visualizarArbol(raiz, 0);
@@ -511,7 +511,7 @@ arbol* eliminarAVL(arbol* raiz, const string& palabra) {
 }
 
 void visualizarArbol(arbol* raiz, int espacio) {
-    if (raiz == nullptr)
+    if (raiz == NULL)
         return;
 
     espacio += 10; //aumenta el espacion entre niveles
