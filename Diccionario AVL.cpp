@@ -13,10 +13,8 @@ struct arbol{
 };
 
 arbol *info();
-void insertar(arbol *&raiz, arbol *nuevo);
 void modificar(arbol *&raiz, const string &palabra);
 void mostrar_elem_palabra(arbol *raiz, const string &palabra);
-void eliminar(arbol *&raiz, const string &palabra);
 void listado_categoria(arbol *raiz, const string &categoria);
 void listado_letra(arbol *raiz, char letra);
 void listado_general(arbol *raiz);
@@ -50,7 +48,7 @@ int main(){
 
         switch(opc){
             case 1: cout<<"\n\tAgregar palabra al diccionario\n"; 
-                    insertar(raiz, info()); 
+                     raiz = insertarAVL(raiz, info());
                     break;
 
             case 2: cout<<"\n\tModificar elementos de una palabra\n";
@@ -81,7 +79,8 @@ int main(){
                         cout << "\nIngrese la palabra que desea eliminar: ";
                         cin.ignore(); 
                         getline(cin, buscar); 
-                        eliminar(raiz, buscar); 
+                        raiz = eliminarAVL(raiz, buscar);
+                        cout << "\nLa palabra ha sido eliminada correctamente.\n";; 
                     }
                     break;
 
@@ -183,10 +182,6 @@ arbol *info(){
     return nuevo;
 }
 
-void insertar(arbol*& raiz, arbol* nuevo) {
-    raiz = insertarAVL(raiz, nuevo);
-}
-
 void modificar(arbol *&raiz, const string &palabra){
     
     if(raiz == NULL){
@@ -268,11 +263,6 @@ void mostrar_elem_palabra(arbol *raiz, const string &palabra){
         cout<<"\n";
     }
     
-}
-
-void eliminar(arbol*& raiz, const string& palabra) {
-    raiz = eliminarAVL(raiz, palabra);
-    cout << "\nLa palabra ha sido eliminada correctamente.\n";
 }
 
 void listado_categoria(arbol *raiz, const string &categoria){
