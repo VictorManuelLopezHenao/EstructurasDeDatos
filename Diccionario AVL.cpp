@@ -245,9 +245,9 @@ void mostrar_elem_palabra(arbol *raiz, const string &palabra){
     }
 
     if(palabra < raiz->palabra){
-        modificar(raiz->izq, palabra);
+        mostrar_elem_palabra(raiz->izq, palabra);
     } else if(palabra > raiz->palabra){
-        modificar(raiz->der, palabra);
+        mostrar_elem_palabra(raiz->der, palabra);
     } else {
 
         cout<<"\nSignificado: "<<raiz->significado;
