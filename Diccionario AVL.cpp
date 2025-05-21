@@ -531,3 +531,5 @@ void visualizarArbol(arbol* raiz, int espacio) {
     // Mostrar subárbol izquierdo
     visualizarArbol(raiz->izq, espacio);
 }
+
+//curso terminado
